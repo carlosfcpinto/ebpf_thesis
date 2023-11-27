@@ -56,3 +56,13 @@ the three arguments to this functino have the following meanings:
 - `bpf_trace_printk()` always writes to `sys/kernel/debug/tracing/trace_pipe`  
 - `sudo` is a `syscall` in itself, we can block that, answwering the question of how does it behave in a system with root privileges  
 
+### Thoughts
+Formally verifying an eBPF program may seem simple since it accepts only limited instructions and we can add predicates as to what each function does. This shall be the main focus of the assignment during its last part, but the only reference found to this was in this [implementation in Coq.](https://www.sccs.swarthmore.edu/users/16/mmcconv1/pl-reflection.html) It is however for BPF code, beeing that eBPF code is a bit more complex than that, making use of more complex data structures(?). The BPF language is essentially composed of ```C
+struct bpf_insn {
+         u_int16_t       code;
+         u_char          jt;
+         u_char          jf;
+         u_int32_t       k;
+ };
+```
+This will be the main focus of the formal verification process of this thesis.
