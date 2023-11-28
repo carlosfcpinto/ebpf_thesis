@@ -63,6 +63,6 @@ struct bpf_insn {
          u_char          jt;
          u_char          jf;
          u_int32_t       k;
- };
-```
+ };```
+
 This will be the main focus of the formal verification process of this thesis.
