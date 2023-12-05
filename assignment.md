@@ -4,7 +4,13 @@ The proposed thesis focus on the preventing of data exfiltration using eBPF. Thi
 
 ## Objectives
 The main objective of this thesis is the development of an eBPF application that prevents data exfiltration from a certain machine. This module will then go through a formal verification process, before deployment. 
+
 The fact that we use eBPF is particularly useful, since the classical approach of static configurations, although they work when configured statically during the provisioning of the machine, they become brittle when deployed across a fleet of machines and in the face of changing policies.
+
+This application will serve the purpose of restricting services and capabilities inside the kernel, based on a per user or service approach, effectively armoring/shielding the system from unwanted accesses, either to services or files.
+
+
+## State of The Art
 Currently, one tool that provides such application is Google's **Kernel Runtime Security Instrumentation**, (KRSI), which makes use of the **Linux Security Module**, (LSM), and **eBPF**, allowing for the implementation of LSM hooks in eBPF code.
 On the topic of the formal verification of eBPF code, a note has been made on *notes.md*, pointing to a link of a tool developed in coq for the formal verification of BPF code, which closely resembles machine code formal verification. There's also a tool for the formal verification of **LLVM** code, which can be an option, being that the compilation of eBPF kernel code makes use of **clang** and the **LLVM** project. (Further research is needed being that the latter tool seems rather simplistic, and perhaps not exactly what is needed.)
 The most realistic approach, being the hardest one aswell, would be the development of a tool that generates verification conditions from eBPF kernel code and can load it into the **Why3** framework, making use of **SMT solvers** to discharge said conditions.
@@ -18,7 +24,19 @@ Being that eBPF code has some restraints, going through a process of static anal
     };
 
 
+## Potential Problems
 
+There is the risk of potential tampering with the eBPF module written. That is, if there were to be another eBPF module written that would attach to the same events as the one preventing data exfiltration, there is the potential of it preventing the first one from working as intended. We should then make sure that the module is always active and can not be bypassed.
+Some potential fixes for this are:
+- Load Time Security -> Ensuring that the program is loaded securely, making sure only authorized users or services could alter it. (This approach seems too simplistic.)
+- Using *seccomp* filters -> Restricting the system calls that can be made by the processes running the eBPF program.
+- eBPF Map Access Controls -> Ensure that only authorized processes and users can read from or write to these maps.
+- Kernel Module Signing -> We could potentially sign the module to prevent unauthorized modifications. (This seems to be the most realistic and safest approach, but it implies the implementation of the eBPf program as a kernel module, if not there may be a way to sign the program with a private key, and making the kernel only accept the loading of it if the public keys match!)
+- User and Group Permissions -> Another approach is to restrict the *bpf* system call to authorized users and services, preventing the writing of another eBPF module entirely
+
+## Questions
+
+Are the users supposed to have root acces? If so, they will have unchecked access to the kernel, if not then they will not be able to by pass the first eBPF program loaded, which would prevent some of the potential problems described above.
 
 ## Tasks
 The following tasks must be done, in order to obtain the expected results:
