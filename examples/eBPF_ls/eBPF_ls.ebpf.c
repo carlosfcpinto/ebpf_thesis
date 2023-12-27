@@ -21,24 +21,23 @@ int kprobe__sys_execve(struct pt_regs *ctx) {
   char buf[256];
   bpf_probe_read_str(buf, sizeof(buf), (void *)PT_REGS_PARM1(ctx));
 
-  if (strncmp(buf, TARGET_DIR, sizeof(TARGET_DIR) - 1) == 0) {
-    // Log the executed file
-    // bpf_trace_printk("Executed file in target directory: %s\n", buf);
-    bpf_perf_event_output(ctx, &output, BPF_F_CURRENT_CPU, &data, sizeof(data));
+  /*   if (strncmp(buf, TARGET_DIR, sizeof(TARGET_DIR) - 1) == 0) { */
+  // Log the executed file
+  // bpf_trace_printk("Executed file in target directory: %s\n", buf);
+  bpf_perf_event_output(ctx, &output, BPF_F_CURRENT_CPU, &data, sizeof(data));
 
-    // Log the files in the target directory
-    // bpf_trace_printk("Files in target directory:\n");
+  // Log the files in the target directory
+  // bpf_trace_printk("Files in target directory:\n");
 
-    /* struct file *file;
-    struct dir_context ctx = {.actor = NULL};
+  /* struct file *file;
+  struct dir_context ctx = {.actor = NULL};
 
-    file = kern_path_file(buf, LOOKUP_FOLLOW, 0);
-    if (file) {
-      iterate_dir(file->f_path.dentry, 0, &ctx);
-      fput(file);
-      }
+  file = kern_path_file(buf, LOOKUP_FOLLOW, 0);
+  if (file) {
+    iterate_dir(file->f_path.dentry, 0, &ctx);
+    fput(file);
+    }
 */
-  }
 
   return 0;
 }
