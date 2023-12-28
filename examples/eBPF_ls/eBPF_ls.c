@@ -46,9 +46,10 @@ int main() {
 
   // handle_event, lost_event and NULL NULL need to be in a struct of type
   // perf_buffer_opts
-  struct perf_buffer_opts pb_aux = {handle_event, lost_event, NULL};
-  struct perf_buffer_opts *pb_opt = &pb_aux;
-  pb = perf_buffer__new(bpf_map__fd(skel->maps.output), 8, pb_opt);
+  // struct perf_buffer_opts pb_aux = {handle_event, lost_event, NULL};
+  // struct perf_buffer_opts *pb_opt = &pb_aux;
+  pb = perf_buffer__new(bpf_map__fd(skel->maps.output), 8, handle_event,
+                        lost_event, NULL, NULL);
   if (!pb) {
     err = -1;
     fprintf(stderr, "Failed to create ring buffer\n");
