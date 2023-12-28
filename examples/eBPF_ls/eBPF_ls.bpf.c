@@ -96,7 +96,7 @@ struct {
 } my_config SEC(".maps");
 
 SEC("ksyscall/execve")
-int BPF_KPROBE_SYSCALL(hello, const char *pathname) {
+int BPF_KPROBE_SYSCALL(const char *pathname, void *ctx) {
   struct data_t data = {};
   struct user_msg_t *p;
 
