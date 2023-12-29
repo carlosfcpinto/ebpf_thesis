@@ -2,8 +2,17 @@
 #include "eBPF_ls.skel.h"
 #include <bpf/libbpf.h>
 #include <errno.h>
+#include <pwd.h>
 #include <stdio.h>
+#include <sys/types.h>
 #include <unistd.h>
+
+// Convert UID from into to string with username
+char *getUser(int uid) {
+  struct passwd *pws;
+  pws = getpwuid(uid);
+  return pws->pw_name;
+}
 
 static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
                            va_list args) {
@@ -16,8 +25,8 @@ static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
 void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
   struct data_t *m = data;
 
-  printf("%-6d %-6d %-16s %-16s %s\n", m->pid, m->uid, m->command, m->path,
-         m->message);
+  printf("%-6d %-6s %-16s %-16s %s\n", m->pid, getUser(m->uid), m->command,
+         m->path, m->message);
 }
 
 void lost_event(void *ctx, int cpu, long long unsigned int data_sz) {
