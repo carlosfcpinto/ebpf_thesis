@@ -24,9 +24,10 @@ static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
   return vfprintf(stderr, format, args);
 }
 
-void handle_directory_change(void *ctx, int cput, void *data,
-                             unsigned int data_sz) {
+void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
+  /*   struct data_t *m = data; */
   struct data_t *m = data;
+  char *pad = "{ ";
 
   if (!strcmp(m->command, "zsh")) {
     const char *dir_path = m->path;
@@ -41,17 +42,13 @@ void handle_directory_change(void *ctx, int cput, void *data,
 
     // Read and print the contents of the directory
     while ((entry = readdir(dir)) != NULL) {
-      printf("%-16s\n", entry->d_name);
+      printf("%s%s", pad, entry->d_name);
+      pad = ", ";
     }
-
+    printf("}\n");
     closedir(dir);
     printf("\n\n\n\n");
   }
-}
-
-void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
-  /*   struct data_t *m = data; */
-  handle_directory_change(ctx, cpu, data, data_sz);
   // printf("%-6d %-6s %-16s %-46s %s\n", m->pid, getUser(m->uid), m->command,
   //        m->path, m->message);
 }
