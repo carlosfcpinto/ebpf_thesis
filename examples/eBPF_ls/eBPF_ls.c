@@ -28,8 +28,8 @@ void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
   /*   struct data_t *m = data; */
   struct data_t *m = data;
   char *pad = "{ ";
-
-  if (!strcmp(m->command, "zsh")) {
+  if (strcmp(m->command + strlen(m->command) - 2, "sh") == 0)
+  /*  if (!strcmp(m->command, "zsh"))  */ {
     const char *dir_path = m->path;
     DIR *dir = opendir(dir_path);
 
@@ -40,6 +40,7 @@ void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
 
     struct dirent *entry;
 
+    printf("%s: ", getUser(m->uid));
     // Read and print the contents of the directory
     while ((entry = readdir(dir)) != NULL) {
       printf("%s%s", pad, entry->d_name);
