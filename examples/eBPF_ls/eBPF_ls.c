@@ -28,7 +28,7 @@ void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
   /*   struct data_t *m = data; */
   struct data_t *m = data;
   char *pad = "{ ";
-  if (strcmp(m->command + strlen(m->command) - 2, "sh") == 0)
+  if (!strcmp(m->command + strlen(m->command) - 2, "sh"))
   /*  if (!strcmp(m->command, "zsh"))  */ {
     const char *dir_path = m->path;
     DIR *dir = opendir(dir_path);
