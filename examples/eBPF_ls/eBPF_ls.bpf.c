@@ -23,8 +23,8 @@ struct {
   __type(value, struct user_msg_t);
 } my_config SEC(".maps");
 
-SEC("ksyscall/execve")
-int BPF_KPROBE_SYSCALL(hello, const char *pathname) {
+SEC("ksyscall/chdir")
+int BPF_KPROBE_SYSCALL(hello, const char *name) {
   struct data_t data = {};
   struct user_msg_t *p;
 
@@ -32,7 +32,7 @@ int BPF_KPROBE_SYSCALL(hello, const char *pathname) {
   data.uid = bpf_get_current_uid_gid() & 0xFFFFFFFF;
 
   bpf_get_current_comm(&data.command, sizeof(data.command));
-  bpf_probe_read_user_str(&data.path, sizeof(data.path), pathname);
+  bpf_probe_read_user_str(&data.path, sizeof(data.path), name);
 
   p = bpf_map_lookup_elem(&my_config, &data.uid);
   if (p != 0) {

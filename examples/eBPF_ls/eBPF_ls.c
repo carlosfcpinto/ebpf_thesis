@@ -1,9 +1,11 @@
 #include "eBPF_ls.h"
 #include "eBPF_ls.skel.h"
 #include <bpf/libbpf.h>
+#include <dirent.h>
 #include <errno.h>
 #include <pwd.h>
 #include <stdio.h>
+#include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -22,11 +24,36 @@ static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
   return vfprintf(stderr, format, args);
 }
 
-void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
+void handle_directory_change(void *ctx, int cput, void *data,
+                             unsigned int data_sz) {
   struct data_t *m = data;
 
-  printf("%-6d %-6s %-16s %-16s %s\n", m->pid, getUser(m->uid), m->command,
-         m->path, m->message);
+  if (!strcmp(m->command, "zsh")) {
+    const char *dir_path = m->path;
+    DIR *dir = opendir(dir_path);
+
+    // Check if the directory can be opened
+    if (!dir) {
+      perror("opendir");
+    }
+
+    struct dirent *entry;
+
+    // Read and print the contents of the directory
+    while ((entry = readdir(dir)) != NULL) {
+      printf("%-16s\n", entry->d_name);
+    }
+
+    closedir(dir);
+    printf("\n\n\n\n");
+  }
+}
+
+void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
+  /*   struct data_t *m = data; */
+  handle_directory_change(ctx, cpu, data, data_sz);
+  // printf("%-6d %-6s %-16s %-46s %s\n", m->pid, getUser(m->uid), m->command,
+  //        m->path, m->message);
 }
 
 void lost_event(void *ctx, int cpu, long long unsigned int data_sz) {
@@ -67,7 +94,7 @@ int main() {
   }
 
   while (true) {
-    err = perf_buffer__poll(pb, 100 /* timeout, ms */);
+    err = perf_buffer__poll(pb, 10000000 /* timeout, ms */);
     // Ctrl-C gives -EINTR
     if (err == -EINTR) {
       err = 0;
