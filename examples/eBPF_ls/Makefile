@@ -28,7 +28,6 @@ vmlinux.h:
 clean:
 	- rm $(BPF_OBJ)
 	- rm $(TARGET)
-	- rm find-map
 
 eBPF_ls: eBPF_ls.c
 	gcc -Wall -o eBPF_ls eBPF_ls.c -L../libbpf/src -l:libbpf.a -lelf -lz
