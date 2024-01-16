@@ -7,7 +7,7 @@ This chapter aims to provide an overview of both of these key topics.
 
 
 
-\subsection{Linux Kernel}
+\section{Linux Kernel}
 The Linux Kernel is the core component of the Linux operating system. It acts as a "bridge" between the hardware and the software layers, it communicates between the two, managing resources as efficiently as possible. 
 
 The jobs of the Linux kernel are:
@@ -37,10 +37,17 @@ Assuming we have a user who runs the \texttt{ls} command in a certain directory,
 \section{eBPF}
 
 %% Discuss eBPF origins, the changes in recent years in the networking scene, and how LSM BPF makes eBPF a solid and reliable tool for security needs
-eBPF is a revolutionary kernel technology that allows developers to write custom code that can be loaded into the kernel dynamically, changing the way the kernel behaves. This enables a new generation of highly performant networking, observability, and security tools.
+Extended Berkeley Packet Filter (eBPF) originated as an extension of the original Berkeley Packet Filter, which was designed for packet filtering within the kernel Unix-like operating systems. The original BPF was created to enhance the efficiency of packet filtering in networking. eBPF was later introduced to extend on those capabilities, beyond networking, allowing for a programmable framework within the Linux kernel. It allows developers to write custom code that can be loaded into the kernel dynamically, enabling a new generation of highly performant networking, observability and security tools.
 
-This tool has its roots in the BSD Packet Filter, which are programs that are written in the BPF instruction set, deciding wheter to accept or reject a network packet. BPF came to stand for Berkeley Packet Filter, being first introduced to Linux in 1997.
+In recent years, eBPF has undergone significant advancements, particularly in the realm of security and monitoring. The programmability of eBPF has led to the development of tools and frameworks that make use of its capabilities for enhanced security measures. As eBPF allows for the creation of security probes that can be attached to specific kernel events, it provides deep insights into system activities. eBPF based tools have allowed for the gain of real-time visibility into the inner workings of the kernel. 
 
+From a monitoring perspective, eBPF has revolutionized the way that system monitoring is seen, as it incurs in less overhead than traditional tools, diminishing the effect it has in the performance of the system. Particularly in systems that run containers, seeing that all containers make use of the same kernel, it has proven invaluable to get relevant system metrics, troubleshooting issues and gaining insights into application behavior.
+
+Furthermore, in recent years, the eBPF ecosystem has expanded with the development of user-friendly tools and libraries, making it more accessible. As a result, researchers, developers and the companies alike can harness the power of eBPF to address specific security concerns. This continuous evolution of eBPF marks it as one of the most exciting recent technologies in the Linux ecosystem.
+
+
+
+\begin{comment}
 BPF evolved to what eBPF, or extended BPF, in 2014, having several significant changes, such as:
 \begin{enumerate}
     \item The BPF instruction set was overhauled to be more efficient on 64-bit machines, and the interpreter was entirely rewritten.
@@ -54,13 +61,31 @@ One of the biggest advancements in the eBPF toolset was made in 2020, when LSM P
 
 eBPF is capable of running custom code in the kernel. As seen above, user space applications communicate with the kernel using system calls, triggering an event which can be captured with an eBPF program. 
 
+\end{comment}
 \subsection{eBPF Code}
 
-eBPF programs are split in user space and kernel programs. User space applications make the connection between the two, loading and handling the kernel eBPF program. eBPF kernel programs are written in a restricted C-like language that is compiled into the eBPF instruction set running in the kernel. 
+Writing eBPF code involves a combination of a plethora of high level languages and a just-in-time (JIT) compiler, allowing for the creation of efficient and flexible programs that run within the Linux kernel. eBPF kernel code is written in a restricted C-like language, making use of libraries to provide abstractions for interacting with the eBPF subsystem. That code is then compiled into a specific type of bytecode that can be loaded into the kernel. This bytecode is subject to the eBPF verifier, which either accepts or rejects the program, making sure that it is safe and adheres to certain constraints. 
 
-eBPF programs are event-driven, being triggered when a certain hook point is passed. Pre-defined hooks exist such as sys calls, functino entry/exit, kernel tracepoints, network events, etc. If a pre-defined hook does not exist, we can create a kernel probe or user probe to effectively attach eBPF programs almost anywhere in kernel or user space applications. 
+User space programs are used to interact with eBPF from user space, usually written in languages like C or Rust and are responsible for loading eBPF programs into the kernel. This involves compiling the user-written code into eBPF bytecode, verifying its safety and then loading into the kernel using the \texttt{bpf()} system call or any abstraction provided by the language used. User space programs manage the entirety of eBPF programs, attaching or detaching them from hooks dynamically. User space programs can also respond to events triggered by eBPF kernel programs, such as the analysis of network packets, allowing syscalls to be executed, etc. This allows for the development of reactive applications that respond to real-time events in the kernel, making it useful for the detection of data exfiltration as is our objective. 
 
-The communication between user space and kernel code is made through the use of pre-defined data structures, such as has tables, ring buffers and maps.
+Kernel space programs form the core of eBPF functionality, allowing for the extension and customization of Linux kernel behaviour without modifying its source code. These programs are attached to hooks, which are predefined locations in the kernel where eBPF programs can be run, allowing them to intercept and manipulate data at various points in the kernel's execution, as these hooks can be associated with various events, such as system calls, function calls, etc. Kernel side programs are subject to a verification process before being loaded, ensuring the safety of the code, and are then ran inside the eBPF virtual machine within the kernel. 
+
+User space and kernel space programs communicate through the use of pre-defined data structures, eBPF maps, serving as shared data structures. These data structures can be used to pass information, parameteres, or results between the user and kernel. eBPF supports various types of these maps, such as array maps, per-CPU maps, hash maps and ring buffers, each being suitable for different use cases. Accessing the information in an eBPF map through user space programs involves two ystem calls \texttt{bpf_map_lookup_elem()} and \texttt{bpf_map_update_elem()}, providing read and write operations on eBPF maps, respectively.
+
+One of the potential limitations of eBPF code is the portability and compatibility of eBPF programs acorss different kernel versions. This challenge is tackled by the CO-RE, (Compile Once - Run Everywhere), concept which aims to enhance the deployment and maintanibility of eBPF programs. This approach consists of a few key elements:
+\begin{enumerate}
+    \item \textit{BTF} BTF is a format for expressing the layout of data structures and function signatures. It is used to determine any differences at compilation time and runtime. It is also used by tools like \texttt{bpftool} to dump data structures in human-readable formats. 
+    \item \textit{Kernel heades} The Linux kernel includes header files describing the data structures it uses, and those headers can change between versions of Linux. eBPF programmers can generate a header file using the \texttt{bpftool} containig all the data structure information about a kernel that might be needed. 
+    \item \textit{Compiler support} The Clang compiler is used to compile eBPF programs with the \texttt{-g} flag. 
+    \item \textit{Library support for data structure relocations} When a user space program loads an eBPF program into the kernel, this approach requires the bytecode to be adjusted to compensate for any differences between the data structures present when it was compiled, and the ones present on the destination machine. This is accomplished making use of the \texttt{libbpf} library. 
+    \item \textit{BPF skeleton} A skeleton can be generated from an eBPF object file, containing functions that user space code can use for the management of the lifecycle of eBPF programs. 
+\end{enumerate}
+Through this approach an eBPF program can run on different kernel versions, massively improving the portability of eBPF. 
+
+All eBPF programs are subject to a verification process, which involves checking every possible execution path through the program and ensuring that every instruction is safe. The verifier also updates some parts of the bytecode to ready it for execution.
+The verifier analyzes the program, evaluating all possible expressions, rather than actually executing them. It keeps track of the state of each register in a structure called \textit{bpf_reg_state}. Each time the verifier comes to a branch, where a decision is made, it pushes a copy of the current state of all the registers onto a stack and explores one of the possible paths. It does this until it reaches the return at the end of the program, at which point it pops a branch off the stack to evaluate the next. If it finds an instruction that could result in an invalid operation, it fails verification, meaning that the program is unsafe to run. 
+Verifying every single possibility is computationally unwise, therefore the verifier utilizes pruning to avoid reevaluating paths that are essentially equivalent. 
+When the verification of a program fails, the verifier will generate a log. It is also able to generate a control flow graph of the program in DOT format.
 
 \section{Formal Verification}
 
