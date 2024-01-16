@@ -256,8 +256,6 @@ Tracepoints are marked locations in the kernel code. They're not exclusive to eB
 
 With BPF support, there will be a structure defined in *vmlinux.h* that matches the context structure passed to a tracepoint eBPF program, effectively rendering the writing of structures for context parameters obsolete. The section definition should be **SEC("tp_btf/tracepoint name")** where the tracepoint name is one of the available events listed in */sys/kernel/tracing/available_events*.
 
-
-
 ### User Space Attachments
 
 eBPF programs can also attach to events within user space code, utilizing *uprobes* and *uretprobes* for entry ad exit of user space functions, and user statically defined tracepoints (USDTs) for specified tracepoints in 
@@ -277,8 +275,6 @@ instrument user space applications. Examples include tracing decrypted
 versions of encrypted information in the SSL library and continuous 
 profiling of applications using tools like Parca.
 
-
-
 ### LSM
 
 **BPF_PROG_TYPE_LSM** programs, which are attached to the Linux Security 
@@ -292,8 +288,6 @@ programs. An interesting aspect is that the return value of
 return code indicates a failed security check, preventing the kernel 
 from proceeding with the requested operation, which contrasts with 
 perf-related program types where the return code is ignored.
-
-
 
 ### Networking
 
@@ -320,8 +314,6 @@ customization of networking behaviors. That involves two main characteristics:
 2. Allowing the eBPF program to modify network packets, socket configuration
    parameters, and so on
 
-
-
 ### Sockets
 
 In the upper layers of the network stack, specific eBPF program types are dedicated to socket and socket-related operations:
@@ -346,8 +338,6 @@ In the upper layers of the network stack, specific eBPF program types are dedica
 
 These program types offer capabilities ranging from filtering socket data for observability to controlling parameters and actions on sockets within Layer 4 connections.
 
-
-
 ### Traffic Control
 
 Further down the network stack is the TC (traffic control) subsystem in 
@@ -360,14 +350,10 @@ covered in the next chapter. Quentin Monnet's blog provides immediate
 examples for those interested. The configuration of these eBPF programs 
 can be done programmatically or using the tc command.
 
-
-
 ### XDP
 
 They attach to specific interfaces, allowing different programs for 
 different interfaces. XDP programs can be managed using the `ip` command, and an example command to load and attach a program to eth0 is provided. The `ip link show` command displays information about the attached XDP program. To remove the XDP program, the `ip link set dev eth0 xdp off` command can be used.
-
-
 
 ### BPF Attachment Types
 
@@ -376,8 +362,6 @@ The attachment type in eBPF programs provides fine-grained control over where a 
 In cases where an attachment type must be specified, the kernel function `bpf_prog_load_check_attach` checks its validity for specific program types. An example is provided for the CGROUP_SOCK program type, which can be attached at various points in the network stack.
 
 To determine valid attachment types for programs, one can refer to the libbpf documentation, which also includes recognized section names for each program and attachment type. Understanding and correctly specifying attachment types are crucial when working with eBPF programs.
-
-
 
 ## Using System Calls for Security Events
 
@@ -407,7 +391,7 @@ Network security tools are often used in a preventative mode, dropping packets r
 
 ## Signed eBPF programs
 
-On going topic, perharps important to prevent third party eBPF programs from being loaded in the first place, as well as making sure that the program we intend to run is the correct one and has not been tampered with
+Ongoing topic, perharps important to prevent third party eBPF programs from being loaded in the first place, as well as making sure that the program we intend to run is the correct one and has not been tampered with
 
 ## Miscellaneous
 
