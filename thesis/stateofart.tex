@@ -47,22 +47,8 @@ Furthermore, in recent years, the eBPF ecosystem has expanded with the developme
 
 
 
-\begin{comment}
-BPF evolved to what eBPF, or extended BPF, in 2014, having several significant changes, such as:
-\begin{enumerate}
-    \item The BPF instruction set was overhauled to be more efficient on 64-bit machines, and the interpreter was entirely rewritten.
-    \item eBPF \textit{maps} were introduced, which are data structures that can be accessed by BPF programs and by user space applications, allowing for the sharing of information between user space applications and BPF programs.
-    \item The \texttt{bpf()} system call was added so that user space programs can interact with eBPF programs in the kernel.
-    \item Several BPF helper functions were added
-    \item The eBPF verifier was added to ensure that eBPF programs are safe to run.
-\end{enumerate}
 
-One of the biggest advancements in the eBPF toolset was made in 2020, when LSM PBF, was introduced, allowing for the attachment of eBPF programs as LSM, (Linux Security Module) kernel interface. This indicated a major use case for eBPF, bringing to light the fact that eBPF is a great platform for security tooling, in addition to networking and observability.
-
-eBPF is capable of running custom code in the kernel. As seen above, user space applications communicate with the kernel using system calls, triggering an event which can be captured with an eBPF program. 
-
-\end{comment}
-\subsection{eBPF Code}
+\textbf{\subsection{eBPF Code}}
 
 Writing eBPF code involves a combination of a plethora of high level languages and a just-in-time (JIT) compiler, allowing for the creation of efficient and flexible programs that run within the Linux kernel. eBPF kernel code is written in a restricted C-like language, making use of libraries to provide abstractions for interacting with the eBPF subsystem. That code is then compiled into a specific type of bytecode that can be loaded into the kernel. This bytecode is subject to the eBPF verifier, which either accepts or rejects the program, making sure that it is safe and adheres to certain constraints. 
 
@@ -70,12 +56,12 @@ User space programs are used to interact with eBPF from user space, usually writ
 
 Kernel space programs form the core of eBPF functionality, allowing for the extension and customization of Linux kernel behaviour without modifying its source code. These programs are attached to hooks, which are predefined locations in the kernel where eBPF programs can be run, allowing them to intercept and manipulate data at various points in the kernel's execution, as these hooks can be associated with various events, such as system calls, function calls, etc. Kernel side programs are subject to a verification process before being loaded, ensuring the safety of the code, and are then ran inside the eBPF virtual machine within the kernel. 
 
-User space and kernel space programs communicate through the use of pre-defined data structures, eBPF maps, serving as shared data structures. These data structures can be used to pass information, parameteres, or results between the user and kernel. eBPF supports various types of these maps, such as array maps, per-CPU maps, hash maps and ring buffers, each being suitable for different use cases. Accessing the information in an eBPF map through user space programs involves two ystem calls \texttt{bpf_map_lookup_elem()} and \texttt{bpf_map_update_elem()}, providing read and write operations on eBPF maps, respectively.
+User space and kernel space programs communicate through the use of pre-defined data structures, eBPF maps, serving as shared data structures. These data structures can be used to pass information, parameteres, or results between the user and kernel. eBPF supports various types of these maps, such as array maps, per-CPU maps, hash maps and ring buffers, each being suitable for different use cases. Accessing the information in an eBPF map through user space programs involves two ystem calls \texttt{bpf\_map\_lookup\_elem()} and \texttt{bpf\_map\_update\_elem()}, providing read and write operations on eBPF maps, respectively.
 
 One of the potential limitations of eBPF code is the portability and compatibility of eBPF programs acorss different kernel versions. This challenge is tackled by the CO-RE, (Compile Once - Run Everywhere), concept which aims to enhance the deployment and maintanibility of eBPF programs. This approach consists of a few key elements:
 \begin{enumerate}
     \item \textit{BTF} BTF is a format for expressing the layout of data structures and function signatures. It is used to determine any differences at compilation time and runtime. It is also used by tools like \texttt{bpftool} to dump data structures in human-readable formats. 
-    \item \textit{Kernel heades} The Linux kernel includes header files describing the data structures it uses, and those headers can change between versions of Linux. eBPF programmers can generate a header file using the \texttt{bpftool} containig all the data structure information about a kernel that might be needed. 
+    \item \textit{Kernel headers} The Linux kernel includes header files describing the data structures it uses, and those headers can change between versions of Linux. eBPF programmers can generate a header file using the \texttt{bpftool} containing all the data structure information about a kernel that might be needed. 
     \item \textit{Compiler support} The Clang compiler is used to compile eBPF programs with the \texttt{-g} flag. 
     \item \textit{Library support for data structure relocations} When a user space program loads an eBPF program into the kernel, this approach requires the bytecode to be adjusted to compensate for any differences between the data structures present when it was compiled, and the ones present on the destination machine. This is accomplished making use of the \texttt{libbpf} library. 
     \item \textit{BPF skeleton} A skeleton can be generated from an eBPF object file, containing functions that user space code can use for the management of the lifecycle of eBPF programs. 
@@ -83,9 +69,111 @@ One of the potential limitations of eBPF code is the portability and compatibili
 Through this approach an eBPF program can run on different kernel versions, massively improving the portability of eBPF. 
 
 All eBPF programs are subject to a verification process, which involves checking every possible execution path through the program and ensuring that every instruction is safe. The verifier also updates some parts of the bytecode to ready it for execution.
-The verifier analyzes the program, evaluating all possible expressions, rather than actually executing them. It keeps track of the state of each register in a structure called \textit{bpf_reg_state}. Each time the verifier comes to a branch, where a decision is made, it pushes a copy of the current state of all the registers onto a stack and explores one of the possible paths. It does this until it reaches the return at the end of the program, at which point it pops a branch off the stack to evaluate the next. If it finds an instruction that could result in an invalid operation, it fails verification, meaning that the program is unsafe to run. 
+The verifier analyzes the program, evaluating all possible expressions, rather than actually executing them. It keeps track of the state of each register in a structure called \textit{bpf\_reg\_state}. Each time the verifier comes to a branch, where a decision is made, it pushes a copy of the current state of all the registers onto a stack and explores one of the possible paths. It does this until it reaches the return at the end of the program, at which point it pops a branch off the stack to evaluate the next. If it finds an instruction that could result in an invalid operation, it fails verification, meaning that the program is unsafe to run. 
 Verifying every single possibility is computationally unwise, therefore the verifier utilizes pruning to avoid reevaluating paths that are essentially equivalent. 
 When the verification of a program fails, the verifier will generate a log. It is also able to generate a control flow graph of the program in DOT format.
 
+\textbf{\subsection{eBPF Programs and Attachment Types}}
+
+\subsubsection{Program Context Arguments}
+All eBPF programs accept a context argument that is a pointer, but the structure it points to varies according to the type of event that triggered it. As such, programs need to accept the right type of context. 
+
+\subsubsection{Kfuncs}
+
+\textit{Kfuncs} in eBPF allow the registration of internal kernel functions with the BPF subsystem, permitting their invocation from eBPF programs after verification. Unlike helper functions \textit{kfuncs} do not guarantee compatibility across kernel versions.
+
+There exists a registration for each eBPF program type allowed to call a specific kfunc. There is a set of "core" BPF kfuncs, including functions for obtaining and releasing kernel references to tasks and cgroups.
+
+\subsubsection{Kprobes and Kretprobes}
+
+
+Kprobe programs can be attached to almost anywhere in the kernel. They are commonly attached using kprobes to the entry to a function and kretprobes to the exit of a function, but there is the possibility of attaching kprobes to an instruction that is some specified offset after the entry to the function.
+
+\subsubsection{Fentry/Fexit}
+
+
+Fentry/fexit is, at the time of writing, the preferred method for tracing the entry to or exit from a kernel function. The same code can be written inside a kprobe or fentry type program. In contrast to kretprobes, the fexit hook provides access to the input parmeters of the function.
+
+\subsubsection{Tracepoints}
+
+Tracepoints are marked locations in the kernel code. They're not exclusive to eBPF and have long been used to generate kernel trace output. Unlike kprobes, tracepoints are stable between kernel releases.
+
+With BPF support, there will be a structure defined in \texttt{vmlinux.h} that matches the context structure passed to a tracepoint eBPF program, effectively rendering the writing of structures for context parameters obsolete. The section definition should be \texttt{SEC("tp\_btf/tracepoint name")} where the tracepoint name is one of the available events listed in \texttt{/sys/kernel/tracing/ available\_events}.
+
+
+\subsubsection{User Space Attachments}
+
+
+eBPF programs can also attach to events within user space code, utilizing \texttt{uprobes} and \texttt{uretprobes} for entry and exit of user space functions, and user statically defined tracepoints (USDTs) for specified tracepoints in application code or user space libraries. These user space probes use the \texttt{BPF\_PROG\_TYPE\_KPROBE} program type.
+
+There are considerations and challenges when instrumenting user space code:
+
+\begin{enumerate}
+    \item The path to shared libraries is architecture-specific, requiring corresponding definitions. 
+    \item Hard to predict the installed user space libraries and applications on a machine. 
+    \item Standalone binaries may not trigger probes attached within shared libraries. 
+    \item Containers have their own filesystem and dependencies, making the path to shared libraries different from the host machine. 
+    \item eBPF programs may need to be aware of the language in which an application was written, considering variations in argument passing mechanisms. 
+\end{enumerate}
+
+Despite these challenges, several useful tools leverage eBPF to instrument user space applications. Examples include tracing decrypted versions of encrypted information in the SSL library and continuous profiling of applications.
+
+
+\subsubsection{LSM}
+
+
+\texttt{BPF\_PROG\_TYPE\_LSM} programs, which are attached to the Linux Security Module (LSM) API, providing a stable interface in the kernel, were initially designed for kernel modules to enforce security policies.
+
+\texttt{BPF\_PROG\_TYPE\_LSM} programs are attached using \texttt{bpf(BPF\_RAW\_TRACEPOINT\_OPEN)} and are treated similarly to tracing programs. An interesting aspect is that the return value of 
+\texttt{BPF\_PROG\_TYPE\_LSM} programs influences the kernel's behavior. A nonzero return code indicates a failed security check, preventing the kernel from proceeding with the requested operation, which contrasts with perf-related program types where the return code is ignored.
+
+
+\subsubsection{Networking}
+
+Notably, these program types necessitate specific capabilities, requiring either \texttt{CAP\_NET\_ADMIN} and \texttt{CAP\_BPF} or \texttt{CAP\_SYS\_ADMIN} capabilities to be granted.
+
+The context provided to these programs is the network message under consideration, although the structure of this context depends on the data available at the relevant point in the network stack. At the bottom of the stack, data is represented as Layer 2 network packets—a sequence of bytes prepared or in the process of being transmitted over the network. On the other hand, at the top of the stack where applications interact, sockets are employed, and the kernel generates socket buffers to manage data transmission to and from these sockets.
+
+One big difference between the networking program types and the tracing-related types is that they are generally intended to allow for the customization of networking behaviors. That involves two main characteristics:
+
+\begin{enumerate}
+    \item Using a return code from the eBPF program to tell the kernel what to do with a network packet-which could involve processing it as usual, dropping it, or redirecting it to a different destination. 
+    \item Allowing the eBPF program to modify network packets, socket configuration parameters.
+\end{enumerate}
+
+
+\subsubsection{Sockets}
+
+In the upper layers of the network stack, specific eBPF program types are dedicated to socket and socket-related operations:
+
+\begin{enumerate}
+    \item \textbf{BPF\_PROG\_TYPE\_SOCKET\_FILTER} which is primarily used for filtering a copy of socket data, being useful for sending filtered data to observability tools. 
+    \item \textbf{BPF\_PROG\_TYPE\_SOCK\_OPS} which is applied to sockets specific to \texttt{TCP} connections, allowing for the interception of various socket operations and actions, providing the ability to set parameters like TCP timeout values for a socket. 
+    \item \textbf{BPF\_PROG\_TYPE\_SK\_SKB} which is utilized in conjunction with a specific map type holding socket references, enabling \texttt{sockmap} operations, facilitating traffic redirection to different destinations at the socket layer.
+\end{enumerate}
+
+These program types offer capabilities ranging from filtering socket data for observability to controlling parameters and actions on sockets within Layer 4 connections.
+
+\subsubsection{Traffic control}
+
+
+Further down the network stack is the TC (traffic control) subsystem in the Linux kernel, which is complex and crucial for providing deep flexibility and configuration over network packet handling. eBPF programs can be attached to the TC subsystem, allowing custom filters and classifiers for both ingress and egress traffic. This is a fundamental component of projects like Cilium. The configuration of these eBPF programs can be done programmatically or using the \texttt{tc} command.
+
+
+\subsubsection{XDP}
+
+These eBPF programs attach to specific network interfaces, enabling the use of distinct programs for different interfaces. Managing XDP (eXpress Data Path) programs is facilitated through the ip command. The effectiveness of the attachment can be verified using the \texttt{ip link show command}, which provides detailed information about the currently attached XDP program.
+
+
+\subsubsection{BPF Attachment Types}
+
+
+The attachment type within eBPF programs plays a pivotal role in finely controlling the locations within the system where a program can be attached. While certain program types inherently determine their attachment type based on the hook to which they are attached, others necessitate explicit specification. This specification significantly influences the permissibility of accessing helper functions and restricts the program's ability to interact with specific context information.
+
+In instances where a particular attachment type is required, the kernel function \texttt{bpf\_prog\_load\_check\_attach} serves the purpose of validating its appropriateness for specific program types. As an illustration, consider the \texttt{CGROUP\_SOCK} program type, which has the flexibility to attach at various points within the network stack. The verification of attachment type ensures that the program can seamlessly integrate with the designated hook points, contributing to its effective functionality.
+
+To ascertain the valid attachment types applicable to different programs, one can refer to the comprehensive documentation provided by \texttt{libbpf}. This documentation not only outlines recognized section names for each program but also elucidates on the permissible attachment types. The correct understanding and specification of attachment types become imperative when working with eBPF programs, as this knowledge forms the foundation for ensuring the proper integration and behavior of the programs within the kernel.
+
 \section{Formal Verification}
 
+Does this appear?

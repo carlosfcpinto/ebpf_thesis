@@ -4,7 +4,23 @@
 \contentsline {section}{\numberline {1.3}Document Organization}{1}{section.1.3}%
 \contentsline {chapter}{\numberline {2}Core Concepts and State of the Art}{3}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Introduction}{3}{section.2.1}%
-\contentsline {section}{\numberline {2.2}eBPF}{3}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Linux Kernel}{4}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}System calls}{4}{subsection.2.2.2}%
-\contentsline {section}{\numberline {2.3}Formal Verification}{5}{section.2.3}%
+\contentsline {section}{\numberline {2.2}Linux Kernel}{3}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}System calls}{4}{subsection.2.2.1}%
+\contentsline {section}{\numberline {2.3}eBPF}{4}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}eBPF Code}{5}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}eBPF Programs and Attachment Types}{6}{subsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.2.1}Program Context Arguments}{6}{subsubsection.2.3.2.1}%
+\contentsline {subsubsection}{\numberline {2.3.2.2}Kfuncs}{7}{subsubsection.2.3.2.2}%
+\contentsline {subsubsection}{\numberline {2.3.2.3}Kprobes and Kretprobes}{7}{subsubsection.2.3.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.2.4}Fentry/Fexit}{7}{subsubsection.2.3.2.4}%
+\contentsline {subsubsection}{\numberline {2.3.2.5}Tracepoints}{7}{subsubsection.2.3.2.5}%
+\contentsline {subsubsection}{\numberline {2.3.2.6}User Space Attachments}{7}{subsubsection.2.3.2.6}%
+\contentsline {subsubsection}{\numberline {2.3.2.7}LSM}{8}{subsubsection.2.3.2.7}%
+\contentsline {subsubsection}{\numberline {2.3.2.8}Networking}{8}{subsubsection.2.3.2.8}%
+\contentsline {subsubsection}{\numberline {2.3.2.9}Sockets}{9}{subsubsection.2.3.2.9}%
+\contentsline {subsubsection}{\numberline {2.3.2.10}Traffic control}{9}{subsubsection.2.3.2.10}%
+\contentsline {subsubsection}{\numberline {2.3.2.11}XDP}{9}{subsubsection.2.3.2.11}%
+\contentsline {subsubsection}{\numberline {2.3.2.12}BPF Attachment Types}{9}{subsubsection.2.3.2.12}%
+\contentsline {section}{\numberline {2.4}Formal Verification}{10}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Problem Statement, Experiments and Work Plan}{11}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{11}{section.3.1}%
