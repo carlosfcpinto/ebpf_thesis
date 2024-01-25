@@ -4,6 +4,32 @@
 \section{Introduction}
 The Problem Statement, Proposed Solution, Experiments, and Work Plan chapter is a crucial component of the thesis as it outlines the research problem, a possible solution to it, an experiment to further sustain that solution, and the plan for executing the research. In this chapter, we aim to present a clear and concise description of the problem we are solving, why it is important, and why the proposed solution is a valid one. The chapter will also include a detailed description of the experiments that will be conducted to validate the solution, as well as the work plan that outlines the tasks and the timeline for executing the research.
 
+\section{The Problem}
+
+A common data exfiltration definition is the theft or unauthorized removal or movement of any data from a device, typically involving a cyber criminal stealing data from personal or corporate devices. 
+The definition more relevant to this dissertation is that of data exportation and extrusion, posing serious problems for organizations. Failing to control information security could mean the loss of intellectual property or cause reputational and financial damage to an organization. 
+
+The problem being faced is that of preventing data exfiltration inside virtual machines. 
+This problem has seen various approaches to being solved, such as static configurations, which work best when configured statically during the provisioning of a machine, becoming brittle to operate when deployed across a fleet of machines and in the face of changing policies.
+
+
+\section{Proposed Solution}
+The proposed solution aims to tackle the challenges mentioned in the previous section by providing a method of easily load tools with the intention of preventing data exfiltration, leakage or theft. To achieve this, the solution leverages the advantages of kernel based security, as well as the flexibility and ease of use of eBPF. 
+
+By using these approaches, the focus of this solution is the ease of deployment and verified security that eBPF provides. 
+
+The main object of this thesis is the development of an eBPF application preventing data exfiltration from virtual machines, such that one policy can be extended across various machines. As stated above, the classical approach of static configurations, although working when configured statically during the provisioning of the machine, become hard to operate when deployed across a fleet of machines. 
+
+This solution will serve the purpose of restricting services and capabilities inside the kernel, based on a per user or service approach, effectively armoring the system from unwanted accesses, either to services or files, preventing data exfiltration from said machines.
+
+The resulting application would then go through a formal verification process on the kernel side of the application, ensuring that the rules to be applied are only that. 
+
+As of the writing of this document, there's no knowledge of projects or documents that describe a similar solution to the one proposed. There are several eBPF based tools for security purposes, mentioned in the previous chapter, but none of these leverage formal verification, and as such, this solution presents itself as both an academic and business opportunity.
+
+
+\section{Experiments}
+
+Missing this.
 \begin{comment}
 \section{The Problem}
 The development of blockchain technology has led to the creation of a large number of consensus protocols, each with its unique characteristics, from the selection of the leader, to the type of network, data structure, block structure, time between each block, and multiple ways to have a chain, to name just a few. Newer and innovative protocols are designed ``everyday'' with totally different characteristics compared to previous protocols. There's a lot of ``fine tunning'' to be done, even when comparing protocols of the same type. These small changes are enough to start a totally different network. For example, just increasing the original block size of Bitcoin was enough to start a new network, Bitcoin Cash \cite{bitcoincash}.

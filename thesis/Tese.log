@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.1.16)  23 JAN 2024 17:39
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.1.16)  25 JAN 2024 19:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -835,40 +835,45 @@ ace code, utilizing \TU/lmtt/m/n/10.95 uprobes \TU/Georgia(0)/m/n/10.95 and \TU
 /lmtt/m/n/10.95 uretprobes
  []
 
-[7] [8] [9]) [10]
+[7] [8] [9]
+Overfull \hbox (5.00645pt too wide) in paragraph at lines 195--196
+\TU/Georgia(0)/m/n/10.95 cies inside the kernel space. One concrete example of 
+this is disallowing certain user/processes
+ []
+
+[10] [11]) [12]
 \openout2 = `problemstatement.aux'.
 
  (./problemstatement.tex
 Chapter 3.
-Excluding 'comment' comment.) [11
+[13
 
 
 
 
-]
+] Excluding 'comment' comment.) [14]
 \openout2 = `conclusion.aux'.
 
- (./conclusion.tex) [12
-
-
-
-
-
-
-]
+ (./conclusion.tex)
 No file Tese.bbl.
 (./Tese.aux (./PaginaRosto.aux) (./Intro.aux) (./stateofart.aux)
 (./problemstatement.aux) (./conclusion.aux))
-Package rerunfilecheck Info: File `Tese.out' has not changed.
-(rerunfilecheck)             Checksum: B6D6ECC83104E30D49FAEACB4E64BD69;2044.
+
+Package rerunfilecheck Warning: File `Tese.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `Tese.out':
+(rerunfilecheck)             Before: 577F0B98D9E91AD8C5203074F0BFA7B7;2815
+(rerunfilecheck)             After:  9F58EE2ADF628BC7CB1C5E99BA5B2DAF;3389.
  ) 
 Here is how much of TeX's memory you used:
- 18345 strings out of 476191
- 358786 string characters out of 5812072
+ 18348 strings out of 476191
+ 358869 string characters out of 5812072
  736578 words of memory out of 5000000
- 38673 multiletter control sequences out of 15000+600000
- 474459 words of font info for 71 fonts, out of 8000000 for 9000
+ 38675 multiletter control sequences out of 15000+600000
+ 474467 words of font info for 72 fonts, out of 8000000 for 9000
  1350 hyphenation exceptions out of 8191
- 94i,12n,122p,1002b,426s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 94i,12n,122p,1197b,426s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Tese.pdf (20 pages).
+Output written on Tese.pdf (22 pages).

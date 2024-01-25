@@ -22,5 +22,15 @@
 \contentsline {subsubsection}{\numberline {2.3.2.11}XDP}{9}{subsubsection.2.3.2.11}%
 \contentsline {subsubsection}{\numberline {2.3.2.12}BPF Attachment Types}{9}{subsubsection.2.3.2.12}%
 \contentsline {section}{\numberline {2.4}Formal Verification}{10}{section.2.4}%
-\contentsline {chapter}{\numberline {3}Problem Statement, Experiments and Work Plan}{11}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Introduction}{11}{section.3.1}%
+\contentsline {section}{\numberline {2.5}State of the Art}{10}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Tetragon}{10}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}\textit {Seccomp}}{11}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Syscall-Tracking Security Tools}{11}{subsection.2.5.3}%
+\contentsline {subsection}{\numberline {2.5.4}BPF LSM}{12}{subsection.2.5.4}%
+\contentsline {subsection}{\numberline {2.5.5}Formally verified approaches}{12}{subsection.2.5.5}%
+\contentsline {section}{\numberline {2.6}Conclusion}{12}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Problem Statement, Experiments and Work Plan}{13}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Introduction}{13}{section.3.1}%
+\contentsline {section}{\numberline {3.2}The Problem}{13}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Proposed Solution}{13}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Experiments}{14}{section.3.4}%

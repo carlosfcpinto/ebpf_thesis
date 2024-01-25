@@ -177,3 +177,58 @@ To ascertain the valid attachment types applicable to different programs, one ca
 \section{Formal Verification}
 
 Does this appear?
+
+
+\section{State of the Art}
+
+Gathering all the information presented above, eBPF presents new capabilities in  the security and observability realm. There already several projects leveraging eBPF to develop security tools.
+We will talk about some of these tools, as well as some classical approaches to the prevention of data exfiltration. 
+
+\subsection{Tetragon}
+
+Tetragon is a relatively new tool in the industry, leveraging eBPF's capabilities to detect and react to security relevant events, such as system calls, process execution events and I/O activity in general. 
+
+Tetragon itself is a runtime security enforcement and observability tool, applying policy and filtering directly in eBPF in the kernel. From an observability use case, as we've seen with eBPF, applying filters directly in the kernel reduces observation overhead. This tool provides rich filters in eBPF, allowing users to specify important and relevant events in their specific context. 
+
+Tetragon can also hook into any function in the Linux kernel and filter based on the information this provides. Tetragon also allows for hooking to points where data structures cannot be manipulated by user space applications inside the kernel, effectively solving several common observability and security use cases, such as system calls tracing, where data is incorrectly read, altered or missing due to user/kernel boundary errors. 
+
+Due to the topics discussed above we can conclude that Tetragon is a solid tool for the prevention of data exfiltration, allowing for users to set policies and enforcing those same policies inside the kernel space. One concrete example of this is disallowing certain user/processes to access critical files inside the system, which will then be enforced at the kernel level, preventing and presenting a trace of data exfiltration attempts. Tetragon's approach is mainly to be used in a Kubernetes environment, being that this project defines a custom Kubernetes resource typecalled \textit{TracingPolicy}. 
+
+\subsection{\textit{Seccomp}}
+
+\textit{Seccomp}, short for secure computing mode, is a Linux kernel feature that provides a simple and efficiet mechanism for restricting the system calls a process can make. The intention of this tool was to allow users to run untrusted code without any possibility of that code executing malicious tasks. 
+
+One iteration of this tool, known as \texttt{seccomp-bpf}, which uses BPF code to filter system calls. A set of BPF instructions acts as a filter, being triggered each time a system call is made. The filter has access both to the system call and its arguments, taking one of the following actions: 
+
+\begin{enumerate}
+    \item Allow the system call. 
+    \item Return an error code to the application that made the system call. 
+    \item Kill the thread. 
+    \item Notify a user space application.
+\end{enumerate}
+
+However, since some of the arguments passed to system calls are pointers and the BPF code used in this tool is not able to dereference these pointers, it has limited flexibility, using only value arguments in its decision-making process. It also has to be applied to a process when it starts, making it impossible to modify the profile in real time. 
+
+\subsection{Syscall-Tracking Security Tools}
+
+Several tools fall under this category, but the best-known one is \textbf{Falco}, which provides security alerts. Falco is, by default, installed as a kernel module, allowing for users to define rules to determine what events are security relevant, generating alerts in a variety of formats. Since eBPF programs can be loaded dynamically, tools like Falco can leverage this to apply rules to applications that are already running, allowing for the modification of rules without modifying the applications or their configuration. 
+
+However, this approach is vulnerable to Time of Check to Time of Use issues. 
+When an eBPF program is triggered at the entry point to a system call, it has access to the arguments passed to that system call. If the arguments passed, as is usual in kernel space, are pointers, the kernel will copy the data into its own data structures, before acting on that data. There exists then a window of opportunity for an attacker to change this data, after it has been inspected but before the kernel copies it. This is problematic since the data that is acted on might not be equal to the one captured. One possible approach to solve this problem is to attach both to the entry and exit points in system calls. This approach can present accurate records of security relevant events, but it cannot prevent an action from taking place, since the system call has already completed when the point of exit check is made. Thus, the program should be attached to an event that occurs after the parameters have been copied into kernel memory, but the data is handled differently in system call specific codes. The approach currently seen as the most correct one is using the Linux Security Module (LSM) API, which requires a recent feature of eBPF: BPF LSM. 
+
+\subsection{BPF LSM}
+
+The Linux Security Module interface contains certain hookpoints that occur just before the kernel acts on a kernel data structure, triggering a function that can make a decision on whether or not to allow the action to be taken. Originally, this interface allowed for security tools to be implemented as kernel modules, being extended by BPF LSM allowing for the attachment of eBPF programs to the same hook points. 
+
+The fact that the hooks are defined in points where the kernel is about to act on certain arguments, and not the entry point of a specific system call, effectively solves the Time of Check to Time of Use issue, and as such, it is the most correct approach for security tools that aim to provide not only observability but also prevention of security relevant events. 
+
+BPF LSM was added in kernel version 5.7, and as such, it is not yet widely available accross Linux distributions.
+
+
+\subsection{Formally verified approaches}
+
+As of the writing of this document, no projects or tools leverage formal verification of eBPF code. The closest examples of these were found in a paper where there was the verification of the interpreter of an instruction setc closely resembling eBPF. \textbf{CITATION}, and a project where there was an attempt to create a translation validator for BPF programs, written in Coq \textbf{CITATION}. 
+
+
+\section{Conclusion}
+This chapter provides a comprehensive overview of the core concepts of eBPF and the state of the art in eBPF based security tooling. With so many different tools available, it is essential to have a clear and concise way to compare and evaluate them. As the eBPF environment continues to see growth and interest both in the industry and in academia, one can expect for these tools to be continually improving on previous iterations. By gaining a deeper understanding of these tools and the underlying concepts, reasearchers and developers can work towards developing new tools that are more secure, identifying and solving potential problems with the approaches now in use. 
