@@ -1,5 +1,6 @@
 #include "eBPF_ls.h"
 #include "eBPF_ls.skel.h"
+/* #include "vmlinux.h" */
 #include <bpf/libbpf.h>
 #include <dirent.h>
 #include <errno.h>
@@ -28,8 +29,7 @@ void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
   /*   struct data_t *m = data; */
   struct data_t *m = data;
   char *pad = "{ ";
-  if (!strcmp(m->command + strlen(m->command) - 2, "sh"))
-  /*  if (!strcmp(m->command, "zsh"))  */ {
+  if (!strcmp(m->command + strlen(m->command) - 2, "sh")) {
     const char *dir_path = m->path;
     DIR *dir = opendir(dir_path);
 
@@ -70,6 +70,13 @@ int main() {
     printf("Failed to open BPF object\n");
     return 1;
   }
+
+  uint32_t key = 1006;
+  struct msg_t msg;
+  const char *m = "this not allowed";
+  strncpy((char *)&msg.message, m, strlen(m));
+  bpf_map__update_elem(skel->maps.my_config, &key, sizeof(key), &msg,
+                       sizeof(msg), 0);
 
   err = eBPF_ls_bpf__attach(skel);
   if (err) {

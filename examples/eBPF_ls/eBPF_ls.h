@@ -7,3 +7,7 @@ struct data_t {
   char message[12];
   char path[100];
 };
+
+struct msg_t {
+  char message[12];
+};
