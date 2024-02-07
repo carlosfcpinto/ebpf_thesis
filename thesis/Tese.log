@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.1.16)  25 JAN 2024 19:27
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.1.16)  27 JAN 2024 18:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -533,6 +533,31 @@ Package: hyphenat 2009/09/02 v2.3c hyphenation utilities
 \langwohyphens=\language87
 LaTeX Info: Redefining \_ on input line 43.
 )
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count319
+\lst@gtempboxa=\box59
+\lst@token=\toks38
+\lst@length=\count320
+\lst@currlwidth=\dimen185
+\lst@column=\count321
+\lst@pos=\count322
+\lst@lostspace=\dimen186
+\lst@width=\dimen187
+\lst@newlines=\count323
+\lst@lineno=\count324
+\lst@maxwidth=\dimen188
+
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
+\c@lstnumber=\count325
+\lst@skipnumbers=\count326
+\lst@framebox=\box60
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2020/03/24 1.8d listings configuration
+))
+Package: listings 2020/03/24 1.8d (Carsten Heinz)
+
 (/usr/share/texlive/texmf-dist/tex/latex/svg/svg.sty
 Package: svg 2020/11/26 v2.02k (include SVG pictures)
 
@@ -561,9 +586,9 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 Package: shellesc 2019/11/08 v1.0c unified shell escape interface for LaTeX
 Package shellesc Info: Restricted shell escape enabled on input line 77.
 )
-\c@svg@param@lastpage=\count319
-\svg@box=\box59
-\c@svg@param@currpage=\count320
+\c@svg@param@lastpage=\count327
+\svg@box=\box61
+\c@svg@param@currpage=\count328
 )
 (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2021/10/31 v2.13 LaTeX color extensions (UK)
@@ -593,13 +618,13 @@ PDF mode.
 ) (/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
 (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
-\pgfutil@everybye=\toks38
-\pgfutil@tempdima=\dimen185
-\pgfutil@tempdimb=\dimen186
+\pgfutil@everybye=\toks39
+\pgfutil@tempdima=\dimen189
+\pgfutil@tempdimb=\dimen190
 
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.t
 ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
-\pgfutil@abb=\box60
+\pgfutil@abb=\box62
 ) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)
 Package: pgfrcs 2021/05/15 v3.1.9a (3.1.9a)
@@ -608,33 +633,33 @@ Package: pgfrcs 2021/05/15 v3.1.9a (3.1.9a)
 Package: pgfsys 2021/05/15 v3.1.9a (3.1.9a)
 
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
-\pgfkeys@pathtoks=\toks39
-\pgfkeys@temptoks=\toks40
+\pgfkeys@pathtoks=\toks40
+\pgfkeys@temptoks=\toks41
 
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeysfiltered.code.t
 ex
-\pgfkeys@tmptoks=\toks41
+\pgfkeys@tmptoks=\toks42
 ))
-\pgf@x=\dimen187
-\pgf@y=\dimen188
-\pgf@xa=\dimen189
-\pgf@ya=\dimen190
-\pgf@xb=\dimen191
-\pgf@yb=\dimen192
-\pgf@xc=\dimen193
-\pgf@yc=\dimen194
-\pgf@xd=\dimen195
-\pgf@yd=\dimen196
+\pgf@x=\dimen191
+\pgf@y=\dimen192
+\pgf@xa=\dimen193
+\pgf@ya=\dimen194
+\pgf@xb=\dimen195
+\pgf@yb=\dimen196
+\pgf@xc=\dimen197
+\pgf@yc=\dimen198
+\pgf@xd=\dimen199
+\pgf@yd=\dimen256
 \w@pgf@writea=\write4
 \r@pgf@reada=\read2
-\c@pgf@counta=\count321
-\c@pgf@countb=\count322
-\c@pgf@countc=\count323
-\c@pgf@countd=\count324
-\t@pgf@toka=\toks42
-\t@pgf@tokb=\toks43
-\t@pgf@tokc=\toks44
-\pgf@sys@id@count=\count325
+\c@pgf@counta=\count329
+\c@pgf@countb=\count330
+\c@pgf@countc=\count331
+\c@pgf@countd=\count332
+\t@pgf@toka=\toks43
+\t@pgf@tokb=\toks44
+\t@pgf@tokc=\toks45
+\pgf@sys@id@count=\count333
  (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
 File: pgf.cfg 2021/05/15 v3.1.9a (3.1.9a)
 )
@@ -650,13 +675,13 @@ File: pgfsys-dvipdfmx.def 2021/05/15 v3.1.9a (3.1.9a)
 f
 File: pgfsys-common-pdf.def 2021/05/15 v3.1.9a (3.1.9a)
 )
-\pgfsys@objnum=\count326
+\pgfsys@objnum=\count334
 )))
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
 tex
 File: pgfsyssoftpath.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfsyssoftpath@smallbuffer@items=\count327
-\pgfsyssoftpath@bigbuffer@items=\count328
+\pgfsyssoftpath@smallbuffer@items=\count335
+\pgfsyssoftpath@bigbuffer@items=\count336
 )
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
 tex
@@ -671,32 +696,32 @@ Writing index file Tese.idx
 (./problemstatement.aux) (./conclusion.aux))
 \openout1 = `Tese.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 41.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 42.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 4
-1.
+2.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 41.
-LaTeX Font Info:    ... okay on input line 41.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 42.
+LaTeX Font Info:    ... okay on input line 42.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -735,9 +760,10 @@ LaTeX Font Info:    ... okay on input line 41.
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
 Package caption Info: rotating package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 41.
+Package hyperref Info: Link coloring OFF on input line 42.
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
 
@@ -747,16 +773,17 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count329
+\c@section@level=\count337
 )
-LaTeX Info: Redefining \ref on input line 41.
-LaTeX Info: Redefining \pageref on input line 41.
-LaTeX Info: Redefining \nameref on input line 41.
+LaTeX Info: Redefining \ref on input line 42.
+LaTeX Info: Redefining \pageref on input line 42.
+LaTeX Info: Redefining \nameref on input line 42.
 
 (./Tese.out) (./Tese.out)
 \@outlinefile=\write6
 \openout6 = `Tese.out'.
 
+\c@lstlisting=\count338
 \openout2 = `PaginaRosto.aux'.
 
  (./PaginaRosto.tex
@@ -787,7 +814,10 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 2.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-))
+)
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 36.
+)
 \tf@toc=\write7
 \openout7 = `Tese.toc'.
 
@@ -822,26 +852,27 @@ Chapter 2.
 
 
 
-] [4] [5] [6]
-Overfull \hbox (13.42082pt too wide) in paragraph at lines 101--102
+]
+File: imagens//strace.png Graphic file (type bmp)
+<imagens//strace.png>
+
+
+LaTeX Warning: Citation `learningeBPF' on page 4 undefined on input line 46.
+
+[4] [5] [6]
+Overfull \hbox (13.42082pt too wide) in paragraph at lines 110--111
 \TU/lmtt/m/n/10.95 name") \TU/Georgia(0)/m/n/10.95 where the tracepoint name is
  one of the available events listed in \TU/lmtt/m/n/10.95 /sys/kernel/tracing/
  []
 
-
-Overfull \hbox (22.82195pt too wide) in paragraph at lines 107--108
+[7]
+Overfull \hbox (22.82195pt too wide) in paragraph at lines 116--117
 \TU/Georgia(0)/m/n/10.95 eBPF programs can also attach to events within user sp
 ace code, utilizing \TU/lmtt/m/n/10.95 uprobes \TU/Georgia(0)/m/n/10.95 and \TU
 /lmtt/m/n/10.95 uretprobes
  []
 
-[7] [8] [9]
-Overfull \hbox (5.00645pt too wide) in paragraph at lines 195--196
-\TU/Georgia(0)/m/n/10.95 cies inside the kernel space. One concrete example of 
-this is disallowing certain user/processes
- []
-
-[10] [11]) [12]
+[8] [9] [10] [11]) [12]
 \openout2 = `problemstatement.aux'.
 
  (./problemstatement.tex
@@ -851,29 +882,74 @@ Chapter 3.
 
 
 
-] Excluding 'comment' comment.) [14]
+]
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 46.
+
+Underfull \vbox (badness 1533) has occurred while \output is active []
+
+ [14]
+Overfull \hbox (58.3063pt too wide) in paragraph at lines 79--80
+[][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+[15]
+Overfull \hbox (18.88599pt too wide) in paragraph at lines 117--118
+[][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (5.7476pt too wide) in paragraph at lines 126--128
+\TU/Georgia(0)/m/n/10.95 The \TU/lmtt/m/n/10.95 handle_-event \TU/Georgia(0)/m/
+n/10.95 and \TU/lmtt/m/n/10.95 lost_-event \TU/Georgia(0)/m/n/10.95 are functio
+ns that handle the events captured when polling
+ []
+
+[16]
+Overfull \hbox (38.59615pt too wide) in paragraph at lines 145--146
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [17]
+Overfull \hbox (45.1662pt too wide) in paragraph at lines 197--198
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (58.3063pt too wide) in paragraph at lines 203--204
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+[18] Excluding 'comment' comment.) [19]
 \openout2 = `conclusion.aux'.
 
- (./conclusion.tex)
+ (./conclusion.tex) [20
+
+
+
+
+
+
+]
 No file Tese.bbl.
 (./Tese.aux (./PaginaRosto.aux) (./Intro.aux) (./stateofart.aux)
 (./problemstatement.aux) (./conclusion.aux))
 
-Package rerunfilecheck Warning: File `Tese.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
+LaTeX Warning: There were undefined references.
 
-Package rerunfilecheck Info: Checksums for `Tese.out':
-(rerunfilecheck)             Before: 577F0B98D9E91AD8C5203074F0BFA7B7;2815
-(rerunfilecheck)             After:  9F58EE2ADF628BC7CB1C5E99BA5B2DAF;3389.
+Package rerunfilecheck Info: File `Tese.out' has not changed.
+(rerunfilecheck)             Checksum: E39ACB3EB5F4D8E29EBA28E73D2E50ED;3767.
  ) 
 Here is how much of TeX's memory you used:
- 18348 strings out of 476191
- 358869 string characters out of 5812072
- 736578 words of memory out of 5000000
- 38675 multiletter control sequences out of 15000+600000
- 474467 words of font info for 72 fonts, out of 8000000 for 9000
+ 19588 strings out of 476191
+ 377740 string characters out of 5812072
+ 785146 words of memory out of 5000000
+ 39892 multiletter control sequences out of 15000+600000
+ 474507 words of font info for 77 fonts, out of 8000000 for 9000
  1350 hyphenation exceptions out of 8191
- 94i,12n,122p,1197b,426s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 94i,12n,122p,1197b,1684s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Tese.pdf (22 pages).
+Output written on Tese.pdf (28 pages).

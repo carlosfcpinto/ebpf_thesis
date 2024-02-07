@@ -1,0 +1,26 @@
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\beamer@sectionpages {1}{1}}
+\headcommand {\beamer@subsectionpages {1}{1}}
+\headcommand {\sectionentry {1}{My section}{2}{My section}{0}}
+\headcommand {\beamer@subsectionpages {2}{1}}
+\headcommand {\beamer@subsectionentry {0}{1}{1}{2}{My subsection}}
+\headcommand {\slideentry {1}{1}{1}{2/6}{My subsection}{0}}
+\headcommand {\beamer@framepages {2}{6}}
+\headcommand {\slideentry {1}{1}{2}{7/7}{My subsection}{0}}
+\headcommand {\beamer@framepages {7}{7}}
+\headcommand {\slideentry {1}{1}{3}{8/8}{My subsection}{0}}
+\headcommand {\beamer@framepages {8}{8}}
+\headcommand {\beamer@subsectionpages {2}{8}}
+\headcommand {\beamer@subsectionentry {0}{1}{2}{9}{My subsection 2}}
+\headcommand {\slideentry {1}{2}{1}{9/11}{My subsection 2}{0}}
+\headcommand {\beamer@framepages {9}{11}}
+\headcommand {\slideentry {1}{2}{2}{12/12}{My subsection 2}{0}}
+\headcommand {\beamer@framepages {12}{12}}
+\headcommand {\slideentry {1}{2}{3}{13/13}{My subsection 2}{0}}
+\headcommand {\beamer@framepages {13}{13}}
+\headcommand {\beamer@partpages {1}{13}}
+\headcommand {\beamer@subsectionpages {9}{13}}
+\headcommand {\beamer@sectionpages {2}{13}}
+\headcommand {\beamer@documentpages {13}}
+\headcommand {\gdef \inserttotalframenumber {7}}
