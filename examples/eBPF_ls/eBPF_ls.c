@@ -1,7 +1,8 @@
 #include "eBPF_ls.h"
 #include "eBPF_ls.skel.h"
-/* #include "vmlinux.h" */
+// #include "vmlinux.h"
 #include <bpf/libbpf.h>
+#include <cyaml/cyaml.h>
 #include <dirent.h>
 #include <errno.h>
 #include <pwd.h>
@@ -16,7 +17,51 @@ char *getUser(int uid) {
   pws = getpwuid(uid);
   return pws->pw_name;
 }
+struct numbers {
+  char *name;
+  uint32_t *data;
+  unsigned data_count;
+};
 
+/******************************************************************************
+ * CYAML schema to tell libcyaml about both expected YAML and data structure.
+ *
+ * (Our CYAML schema is just a bunch of static const data.)
+ ******************************************************************************/
+
+/* CYAML value schema for entries of the data sequence. */
+static const cyaml_schema_value_t data_entry = {
+    CYAML_VALUE_INT(CYAML_FLAG_DEFAULT, int),
+};
+
+/* CYAML mapping schema fields array for the top level mapping. */
+static const cyaml_schema_field_t top_mapping_schema[] = {
+    CYAML_FIELD_STRING_PTR("name", CYAML_FLAG_POINTER, struct numbers, name, 0,
+                           CYAML_UNLIMITED),
+    CYAML_FIELD_SEQUENCE("data", CYAML_FLAG_POINTER, struct numbers, data,
+                         &data_entry, 0, CYAML_UNLIMITED),
+    CYAML_FIELD_END};
+
+/* CYAML value schema for the top level mapping. */
+static const cyaml_schema_value_t top_schema = {
+    CYAML_VALUE_MAPPING(CYAML_FLAG_POINTER, struct numbers, top_mapping_schema),
+};
+
+/******************************************************************************
+ * Actual code to load and save YAML doc using libcyaml.
+ ******************************************************************************/
+
+/* Our CYAML config.
+ *
+ * If you want to change it between calls, don't make it const.
+ *
+ * Here we have a very basic config.
+ */
+static const cyaml_config_t config = {
+    .log_fn = cyaml_log,            /* Use the default logging function. */
+    .mem_fn = cyaml_mem,            /* Use the default memory allocator. */
+    .log_level = CYAML_LOG_WARNING, /* Logging errors and warnings only. */
+};
 static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
                            va_list args) {
   if (level >= LIBBPF_DEBUG)
@@ -58,7 +103,7 @@ void lost_event(void *ctx, int cpu, long long unsigned int data_sz) {
   printf("lost event\n");
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   struct eBPF_ls_bpf *skel;
   int err;
   struct perf_buffer *pb = NULL;
@@ -71,12 +116,37 @@ int main() {
     return 1;
   }
 
-  uint32_t key = 1006;
+  // uint32_t key = 1006;
   struct msg_t msg;
   const char *m = "this not allowed";
   strncpy((char *)&msg.message, m, strlen(m));
-  bpf_map__update_elem(skel->maps.my_config, &key, sizeof(key), &msg,
-                       sizeof(msg), 0);
+  struct numbers *n;
+  enum {
+    ARG_PROG_NAME,
+    ARG_PATH_IN,
+    ARG__COUNT,
+  };
+
+  /* Handle args */
+  if (argc != ARG__COUNT) {
+    fprintf(stderr, "Usage:\n");
+    fprintf(stderr, "  %s <INPUT>\n", argv[ARG_PROG_NAME]);
+    return EXIT_FAILURE;
+  }
+
+  /* Load input file. */
+  err = cyaml_load_file(argv[ARG_PATH_IN], &config, &top_schema,
+                        (cyaml_data_t **)&n, NULL);
+  if (err != CYAML_OK) {
+    fprintf(stderr, "ERROR: %s\n", cyaml_strerror(err));
+    return EXIT_FAILURE;
+  }
+
+  /* Use the data. */
+  for (unsigned i = 0; i < n->data_count; i++) {
+    bpf_map__update_elem(skel->maps.my_config, &n->data[i], sizeof(n->data[i]),
+                         &msg, sizeof(msg), 0);
+  }
 
   err = eBPF_ls_bpf__attach(skel);
   if (err) {

@@ -174,13 +174,13 @@ int BPF_PROG(path_chmod, const struct path *path, umode_t mode) {
   p = bpf_map_lookup_elem(&my_config, &data.uid);
   if (p != 0) {
     bpf_printk("This user %d\n", data.uid);
+    bpf_printk("Chmod allowed to %s", path->dentry->d_iname);
+    return 0;
+  } else {
+    bpf_printk("This user %d\n", data.uid);
     bpf_printk("Access denied to %s", file_path);
 
     return -EPERM;
-  } else {
-    bpf_printk("This user %d\n", data.uid);
-    bpf_printk("Chmod allowed to %s", path->dentry->d_iname);
-    return 0;
   }
 
   /*   bpf_perf_event_output(ctx, &output, BPF_F_CURRENT_CPU, &data,

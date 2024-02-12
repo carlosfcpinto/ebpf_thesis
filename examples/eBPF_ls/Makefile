@@ -30,7 +30,7 @@ clean:
 	- rm $(TARGET)
 
 eBPF_ls: eBPF_ls.c
-	gcc -Wall -o eBPF_ls eBPF_ls.c -L../libbpf/src -l:libbpf.a -lelf -lz
+	gcc -Wall -o eBPF_ls eBPF_ls.c -L../libbpf/src -l:libbpf.a -lelf -lz -lcyaml
 # INCLUDES := -I$(OUTPUT)
 # CFLAGS := -g -Wall
 # ARCH := $(shell uname -m | sed 's/x86_64/x86/')
