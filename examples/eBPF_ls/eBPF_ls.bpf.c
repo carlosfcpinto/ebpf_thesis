@@ -4,6 +4,7 @@
 #include <bpf/bpf_core_read.h>
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
+#include <string.h>
 
 char message[12] = "Hello World";
 
@@ -34,6 +35,9 @@ statfunc struct buffer *get_buffer() {
   u32 zero = 0;
   return (struct buffer *)bpf_map_lookup_elem(&heaps_map, &zero);
 }
+
+// based in
+// https://github.com/aquasecurity/tracee/blob/a6118678c6908c74d6ee26ca9183e99932d098c9/pkg/ebpf/c/common/filesystem.h#L160
 
 statfunc long get_path_str_from_path(u_char **path_str, const struct path *path,
                                      struct buffer *out_buf) {
@@ -188,4 +192,51 @@ int BPF_PROG(path_chmod, const struct path *path, umode_t mode) {
   return 0;
 }
 
+SEC("lsm/task_fix_setuid")
+int BPF_PROG(setuid, struct cred *new, struct cred *old, int flags) {
+
+  struct task_struct *task = (struct task_struct *)bpf_get_current_task();
+  struct file *file = BPF_CORE_READ(task, mm, exe_file);
+  struct path *path = __builtin_preserve_access_index(&file->f_path);
+
+  struct buffer *string_buf = get_buffer();
+  if (string_buf == NULL) {
+    return 0;
+  }
+  u_char *file_path = NULL;
+  get_path_str_from_path(&file_path, path, string_buf);
+  bpf_printk("sudo access in %s ", file_path);
+  bpf_printk("flags: %d ", flags);
+
+  char comm[16];
+  bpf_get_current_comm(&comm, sizeof(comm));
+  bpf_printk("/n/n/n This command %s ", comm);
+  // char new_string[15];
+  // bpf_probe_read_str(&new_string, sizeof(new_string), file_path);
+  if ((new->uid.val == 1000 && old->uid.val == 1006) ||
+    (new->uid.val == 1000 && old->uid.val == 0)/* &&
+      __builtin_memcmp("su\0", comm, 2 * sizeof(char)) == 0 */)
+    return -EPERM;
+  return 0;
+}
+
+// SEC("ksyscall/execve")
+// int BPF_PROG(exec, const char *pathname, char *const _Nullable argv[],
+//              char *const _Nullable envp[]) {
+//   char comm[16];
+//
+//   struct data_t data = {};
+//   u64 uid;
+//
+//   data.pid = bpf_get_current_pid_tgid() >> 32;
+//   uid = bpf_get_current_uid_gid() & 0xFFFFFFFF;
+//   data.uid = uid;
+//   bpf_get_current_comm(&comm, sizeof(comm));
+//   if (__builtin_memcmp(comm, "su", 2) == 0 && uid == 0) {
+//     // Deny the execution of "su" command
+//     bpf_printk("sudo access detected in probe ");
+//     return -EPERM; // This will cause the "su" command to fail
+//   }
+//   return 0;
+// }
 char LICENSE[] SEC("license") = "Dual BSD/GPL";
