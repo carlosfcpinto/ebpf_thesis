@@ -213,9 +213,11 @@ int BPF_PROG(setuid, struct cred *new, struct cred *old, int flags) {
   bpf_printk("/n/n/n This command %s ", comm);
   // char new_string[15];
   // bpf_probe_read_str(&new_string, sizeof(new_string), file_path);
-  if ((new->uid.val == 1000 && old->uid.val == 1006) ||
-    (new->uid.val == 1000 && old->uid.val == 0)/* &&
-      __builtin_memcmp("su\0", comm, 2 * sizeof(char)) == 0 */)
+  // if (/* (new->uid.val == 1000 && old->suid.val == 1006) ||*/
+  //   (new->uid.val == 1000 && old->euid.val == 0 && old->suid.val != 1000)/*
+  //   &&
+  //     __builtin_memcmp("su\0", comm, 2 * sizeof(char)) == 0 */)
+  if (new->uid.val == 1000 && old->euid.val == 0 && old->uid.val != 1000)
     return -EPERM;
   return 0;
 }

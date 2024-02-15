@@ -69,108 +69,220 @@ Data exfiltration pode ser caracterizado como:
 \begin{frame}
 \frametitle{Problema II}
 
-A possibilidade de dados poderem ser transferidos sem autorização é particularmente gravosa para empresas, visto poderem incorrer em danos monetários e de credibilidade caso tal aconteça. 
+A possibilidade de dados poderem ser transferidos sem autorização é particularmente gravosa para empresas, visto poderem incorrer não só em danos monetários, e de roubo de propriedade intelectual, mas também poderem ver a sua credibilidade afetada caso tal aconteça. 
+
+\end{frame}
+
+
+\begin{frame}
+
+\frametitle{Solução Proposta}
+
+Desenvolver uma aplicação que faça uso de kernel-based security, com base em eBPF, de modo a prevenir data exfiltration em máquinas virtuais.
+
+\end{frame}
+
+\subsection{Conceitos e Estado da Arte}
+
+
+\begin{frame}
+\frametitle{Conceitos Base}
+
+\pause
+\begin{exampleblock}{Linux Kernel}
+    O Kernel de Linux é o componente base do sistema operativo Linux, servindo como mediador entre software e hardware.
+\end{exampleblock}
+
+\bigskip
+
+\pause
+\begin{exampleblock}{eBPF}
+    eBPF é uma tecnologia que permite correr programas dentro do kernel sem modificar o mesmo.
+\end{exampleblock}
 
 \end{frame}
 % ----------------------------------------------------------------------------
-% *** END of Test frame >>>
-% ----------------------------------------------------------------------------
 
-% ----------------------------------------------------------------------------
-% *** Test frame with overflow <<<
-% ----------------------------------------------------------------------------
-%\begin{frame}
-%\frametitle{Test frame with overflow}
-%\lipsum[1-7]
-%\end{frame}
-% ----------------------------------------------------------------------------
-% *** END of Test frame >>>
-% ----------------------------------------------------------------------------
-
-
-% ----------------------------------------------------------------------------
-% *** Test frame with overflow <<<
-% ----------------------------------------------------------------------------
 \begin{frame}
+\frametitle{Linux Kernel}
 
-\frametitle{The is a test frame with a pretty long frame title}
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut purus
-elit, vestibulum ut, placerat ac, adipiscing vitae, felis. Curabitur
-dictum gravida mauris.
+\begin{exampleblock}{Tarefas do Kernel}
+    \begin{itemize}
+        \pause
+        \item Gestão de processos. 
+        \pause    
+    \item Gestão de memória. 
+        \pause
+    \item Drivers de dispositivos. 
+        \pause
+        \item\textbf{System Calls e Segurança.}
+    \end{itemize}
+\end{exampleblock}
 
-\end{frame}
-% ----------------------------------------------------------------------------
-% *** END of Test frame >>>
-% ----------------------------------------------------------------------------
-
-\subsection{My subsection 2}
-% ----------------------------------------------------------------------------
-% *** Test frame with Itemize <<<
-% ----------------------------------------------------------------------------
-\begin{frame}
-\frametitle{Test frame with itemize}
-
-\begin{itemize}
-    \item<1-> firstly
-    \item<2-> secondly
-        \begin{itemize}
-            \item sub-item
-            \item another sub-item
-        \end{itemize}
-      \item<3-> thirdly
-\end{itemize}
-
-\end{frame}
-% ----------------------------------------------------------------------------
-% *** END of Test frame with Itemize >>>
-% ----------------------------------------------------------------------------
-
-
-% ----------------------------------------------------------------------------
-% *** Test frame with Math <<<
-% ----------------------------------------------------------------------------
-\begin{frame}
-\frametitle{A math frame}
-
-\begin{theorem}[Pythagoras]
-The square of the hypotenuse of a \alert{right} triangle is equal to the sum of the squares on the other two sides:
-\[
-a^2 + b^2 = c^2.
-\]
-\end{theorem}
-
-\begin{proof}
-Straightforward.
-\end{proof}
 
 \end{frame}
 % ----------------------------------------------------------------------------
 % *** END of Test frame with Math >>>
 % ----------------------------------------------------------------------------
 
+\begin{frame}
+\frametitle{Kernel Space}
+\bigskip
+\begin{figure}[t]
+\includegraphics[scale=0.15]{kernel.png}
+\centering
+\end{figure}
+\end{frame}
 
+\begin{frame}
+\frametitle{System Calls}
+\bigskip
+\begin{figure}[t]
+\includegraphics[width=8cm, height=6cm]{strace2.png}
+\centering
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{eBPF}
+
+\begin{figure}[x]
+\includegraphics[scale=0.25]{bpf.png}
+\centering
+\end{figure}
+\end{frame}
 % ----------------------------------------------------------------------------
 % *** Test frame with Environments <<<
 % ----------------------------------------------------------------------------
+
 \begin{frame}
-\frametitle{Environments}
+\frametitle{Kernel VS User Space}
 
-\begin{definition}
-A \textbf{prime number} (or a prime) is a natural number which has exactly two distinct natural number divisors: 1 and itself.
-\end{definition}
 
-\begin{exampleblock}{Example}
-The first five prime numbers are $2$, $3$, $5$, $7$, and $11$.
-\end{exampleblock}
-
-\begin{alertblock}{Alert block}
-Note that $1$ is not a prime number.
-\end{alertblock}
+\begin{figure}[x]
+\includegraphics[scale=0.21]{internal.png}
+\centering
+\end{figure}
 
 \end{frame}
-% ----------------------------------------------------------------------------
-% *** END of Test frame with Environments >>>
-% ----------------------------------------------------------------------------
+
+% \begin{frame}
+% \frametitle{Overview}
+%
+%
+% \begin{figure}[x]
+% \includegraphics[scale=0.21]{libbpf.png}
+% \centering
+% \end{figure}
+%
+% \end{frame}
+
+
+\begin{frame}
+\frametitle{Verificação}
+
+
+\begin{figure}[x]
+\includegraphics[scale=0.25]{verifier.png}
+\centering
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Mapas eBPF}
+
+
+\begin{figure}[x]
+\includegraphics[scale=0.25]{map.png}
+\centering
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Estado da Arte}
+
+\begin{exampleblock}{Ferramentas}
+    \begin{itemize}
+        \pause
+        \item Seccomp-bpf
+        \pause
+        \item Tetragon
+    \end{itemize}
+\end{exampleblock}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Seccomp-bpf}
+
+A ferramenta \emph{seccomp-bpf} é uma extensão ao \emph{seccomp} que permite filtrar as \emph{syscalls} a partir de um programa BPF.
+
+É mais flexível que o \emph{seccomp} original, que permitia apenas quatro \emph{syscalls}.  
+
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Tetragon}
+
+%Falar das 3, tetragon, bpf lsm e seccomp-bpf
+
+\begin{figure}[x]
+\includegraphics[scale=0.15]{tetragon.png}
+\centering
+\end{figure}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{\emph{Syscall} tooling}
+
+Várias ferramentas fazem uso de \emph{syscalls} para monitorizar e responder a eventos relevantes de um ponto de vista de segurança. 
+
+\pause
+\begin{alertblock}{\textbf{TOCTOU}}
+    Estas ferramentas são vulneráveis a ataques de \textbf{TOCTOU}, visto estarem normalmente na entrada da função chamada pelo \emph{kernel}.
+\end{alertblock}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{BPF LSM}
+
+
+\begin{figure}[x]
+\includegraphics[scale=0.25]{lsm2.png}
+\centering
+\end{figure}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{}
+  \centering \Huge
+  \textbf{\emph{Demo}}
+\end{frame}
+
+\begin{frame}{}
+  \centering \Huge
+  \textbf{\emph{Trabalho futuro}}
+\end{frame}
+
+\begin{frame}{}
+  \centering \Huge
+  \textbf{\emph{Questões}}
+\end{frame}
+
 
 
 \end{document}
