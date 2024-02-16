@@ -220,15 +220,50 @@ The plan outlined below highlights the tasks inteded to take place in this disse
 \textbf{Task 4:} Writing of the thesis. The thesis will present the research results and provide conclusions based on the work performed in the previous tasks. The writing of the thesis will be a final step, but will be done concurrently with the other tasks.
 
 In addition to these tasks, additional features or improvements to existing ones might be added, depending on the results obtained. the aim is to continue advancing the state of the art in the field of eBPF security and particularly the formal verification of such tools.
+\\
+
+Pictured below is the work plan, in the form a Gantt chart, structured for a 6 month schedule.
+
+
+\begin{figure}[h]
+    \begin{center}
+    
+    \begin{ganttchart}[y unit title=0.4cm,
+    y unit chart=0.5cm,
+    vgrid,hgrid, 
+    title label anchor/.style={below=-1.6ex},
+    title left shift=.05,
+    title right shift=-.05,
+    title height=1,
+    progress label text={},
+    bar height=0.7,
+    group right shift=0,
+    group top shift=.6,
+    group height=.3]{1}{24}
+    %labels
+    \gantttitle{Plan}{24} \\
+    \gantttitle{M1}{4} 
+    \gantttitle{M2}{4} 
+    \gantttitle{M3}{4} 
+    \gantttitle{M4}{4} 
+    \gantttitle{M5}{4} 
+    \gantttitle{M6}{4} \\
+    %tasks
+    \ganttbar{Task 1}{1}{8} \\
+    \ganttbar{Task 2}{9}{12} \\
+    \ganttbar{Task 3}{13}{23} \\
+    \ganttbar{Task 4}{1}{24} \\
+    \end{ganttchart}
+    \end{center}
+    \caption{Work Plan}
+
+\end{figure}
 
 
 \section{Conclusion}
-In conclusion, this project has explored the crucial concepts of eBPF-based security. Through a review of the state of the art, it was made clear that although several tools leverage eBPF for security purposes, none of those have gone through the process of formal verification. 
+This chapter provides a concise introduction to the problem and the proposed solution. It also discusses the experiments done to uphold the claim that the solution is a feasible one, and lastly it uncovers the plan for the future tasks to be developed. 
+eBPF-based security, as shown in the example, offers itself as an ingineous solution to the problem stated.
 
-The proposed solution is to develop an eBPF based tool, and submit it to the process of rigorous testing and formal verification, as to guarantee the safety and correctness of said tool. The experiment presented is to be seen as a first step in achieving this goal. 
-
-The document also outlined the main contributions, goals, and objectives for future work. 
-The next phase of the project will focus on the completion and testing of the target eBPF application, the formal verification process of it, leaving open the possibility of additional features and targets to be presented along the way. The aim is to advance the state of the art in the security field, specifically on data exfiltration prevention.
 \begin{comment}
 In addition to these tasks, we may consider incorporating additional features or making improvements to existing features, depending on the results of our research and the progress of our work. The aim is to continue advancing the state of the art in the field of blockchain consensus algorithms, and to provide a comprehensive understanding of the various protocols and tools that are available for improving the performance and efficiency of blockchain networks.
 
