@@ -1,110 +1,28 @@
-TARGET = eBPF_ls
-ARCH = $(shell uname -m | sed 's/x86_64/x86/' | sed 's/aarch64/arm64/')
-
-BPF_OBJ = ${TARGET:=.bpf.o}
-USER_C = ${TARGET:=.c}
-USER_SKEL = ${TARGET:=.skel.h}
-
-all: $(TARGET) $(BPF_OBJ) eBPF_ls
-.PHONY: all 
-
-$(TARGET): $(USER_C) $(USER_SKEL) 
-	gcc -Wall -o $(TARGET) $(USER_C) -L../libbpf/src -l:libbpf.a -lelf -lz
-
-%.bpf.o: %.bpf.c vmlinux.h
-	clang \
-	    -target bpf \
-        -D __TARGET_ARCH_$(ARCH) \
-	    -Wall \
-	    -O2 -g -o $@ -c $<
-	llvm-strip -g $@
-
-$(USER_SKEL): $(BPF_OBJ)
-	bpftool gen skeleton $< > $@
-
-vmlinux.h:
-	bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
-
-clean:
-	- rm $(BPF_OBJ)
-	- rm $(TARGET)
-
-eBPF_ls: eBPF_ls.c
-	gcc -Wall -o eBPF_ls eBPF_ls.c -L../libbpf/src -l:libbpf.a -lelf -lz -lcyaml
-# INCLUDES := -I$(OUTPUT)
-# CFLAGS := -g -Wall
-# ARCH := $(shell uname -m | sed 's/x86_64/x86/')
-# APPS = eBPF_ls
-#
-# # Build libbpf
-# $(LIBBPF_OBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPUT)/libbpf
-# 	$(call msg,LIB,$@)
-# 	$(Q)$(MAKE) -C $(LIBBPF_SRC) BUILD_STATIC_ONLY=1		      \
-# 		    OBJDIR=$(dir $@)/libbpf DESTDIR=$(dir $@)		      \
-# 		    INCLUDEDIR= LIBDIR= UAPIDIR=			      \
-# 		    install
-# # Build BPF code
-# $(OUTPUT)/%.bpf.o: %.bpf.c $(LIBBPF_OBJ) $(wildcard %.h) vmlinux.h | $(OUTPUT)
-# 	$(call msg,BPF,$@)
-# 	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(ARCH) $(INCLUDES) -c $(filter %.c,$^) -o $@
-# 	$(Q)$(LLVM_STRIP) -g $@ # strip useless DWARF info
-# 	
-# # Generate BPF skeletons
-# $(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(OUTPUT)
-# 	$(call msg,GEN-SKEL,$@)
-# 	$(Q)$(BPFTOOL) gen skeleton $< > $@
-# 	
-# # Build user-space code
-# $(patsubst %,$(OUTPUT)/%.o,$(APPS)): %.o: %.skel.h
-#
-# $(OUTPUT)/%.o: %.c $(wildcard %.h) | $(OUTPUT)
-# 	$(call msg,CC,$@)
-# 	$(Q)$(CC) $(CFLAGS) $(INCLUDES) -c $(filter %.c,$^) -o $@
-# 	
-# # Build application binary
-# $(APPS): %: $(OUTPUT)/%.o $(LIBBPF_OBJ) | $(OUTPUT)
-# 	$(call msg,BINARY,$@)
-# 	$(Q)$(CC) $(CFLAGS) $^ -lelf -lz -o $@
-#
-#
-# SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+# # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
 # OUTPUT := .output
 # CLANG ?= clang
-# LIBBPF_SRC := $(abspath ../../libbpf/src)
-# BPFTOOL_SRC := $(abspath ../../bpftool/src)
+# LLVM_STRIP ?= llvm-strip
+# LIBBPF_SRC := $(abspath ../libbpf/src)
+# BPFTOOL_SRC := $(abspath ../bpftool/src)
 # LIBBPF_OBJ := $(abspath $(OUTPUT)/libbpf.a)
 # BPFTOOL_OUTPUT ?= $(abspath $(OUTPUT)/bpftool)
 # BPFTOOL ?= $(BPFTOOL_OUTPUT)/bootstrap/bpftool
-# LIBBLAZESYM_SRC := $(abspath ../../blazesym/)
-# LIBBLAZESYM_INC := $(abspath $(LIBBLAZESYM_SRC)/include)
-# LIBBLAZESYM_OBJ := $(abspath $(OUTPUT)/libblazesym.a)
 # ARCH ?= $(shell uname -m | sed 's/x86_64/x86/' \
-# 			 | sed 's/arm.*/arm/' \
 # 			 | sed 's/aarch64/arm64/' \
 # 			 | sed 's/ppc64le/powerpc/' \
 # 			 | sed 's/mips.*/mips/' \
-# 			 | sed 's/riscv64/riscv/' \
-# 			 | sed 's/loongarch64/loongarch/')
-# VMLINUX := ../../vmlinux/$(ARCH)/vmlinux.h
+# 			 | sed 's/arm.*/arm/' \
+# 			 | sed 's/riscv64/riscv/')
+# # VMLINUX := ../vmlinux/$(ARCH)/vmlinux.h
+# VMLINUX := vmlinux.h
 # # Use our own libbpf API headers and Linux UAPI headers distributed with
 # # libbpf to avoid dependency on system-wide headers, which could be missing or
 # # outdated
-# INCLUDES := -I$(OUTPUT) -I../../libbpf/include/uapi -I$(dir $(VMLINUX)) -I$(LIBBLAZESYM_INC)
+# INCLUDES := -I$(OUTPUT) -I../libbpf/include/uapi -I$(dir $(VMLINUX))
 # CFLAGS := -g -Wall
 # ALL_LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 #
-# APPS = eBPF_ls minimal minimal_legacy bootstrap uprobe kprobe fentry usdt sockfilter tc ksyscall task_iter
-#
-#
-# CARGO ?= $(shell which cargo)
-# ifeq ($(strip $(CARGO)),)
-# BZS_APPS :=
-# else
-# BZS_APPS := profile
-# APPS += $(BZS_APPS)
-# # Required by libblazesym
-# ALL_LDFLAGS += -lrt -ldl -lpthread -lm
-# endif
+# APPS = bootstrap
 #
 # # Get Clang's default includes on this system. We'll explicitly add these dirs
 # # to the includes list when compiling with `-target bpf` because otherwise some
@@ -114,7 +32,7 @@ eBPF_ls: eBPF_ls.c
 # #
 # # Use '-idirafter': Don't interfere with include mechanics except where the
 # # build would have failed anyways.
-# CLANG_BPF_SYS_INCLUDES ?= $(shell $(CLANG) -v -E - </dev/null 2>&1 \
+# CLANG_BPF_SYS_INCLUDES = $(shell $(CLANG) -v -E - </dev/null 2>&1 \
 # 	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }')
 #
 # ifeq ($(V),1)
@@ -163,21 +81,11 @@ eBPF_ls: eBPF_ls.c
 # 	$(call msg,BPFTOOL,$@)
 # 	$(Q)$(MAKE) ARCH= CROSS_COMPILE= OUTPUT=$(BPFTOOL_OUTPUT)/ -C $(BPFTOOL_SRC) bootstrap
 #
-#
-# $(LIBBLAZESYM_SRC)/target/release/libblazesym.a::
-# 	$(Q)cd $(LIBBLAZESYM_SRC) && $(CARGO) build --release
-#
-# $(LIBBLAZESYM_OBJ): $(LIBBLAZESYM_SRC)/target/release/libblazesym.a | $(OUTPUT)
-# 	$(call msg,LIB, $@)
-# 	$(Q)cp $(LIBBLAZESYM_SRC)/target/release/libblazesym.a $@
-#
 # # Build BPF code
-# $(OUTPUT)/%.bpf.o: %.bpf.c $(LIBBPF_OBJ) $(wildcard %.h) $(VMLINUX) | $(OUTPUT) $(BPFTOOL)
+# $(OUTPUT)/%.bpf.o: %.bpf.c $(LIBBPF_OBJ) $(wildcard %.h) $(VMLINUX) | $(OUTPUT)
 # 	$(call msg,BPF,$@)
-# 	$(Q)$(CLANG) -g -O2 -target bpf -D__TARGET_ARCH_$(ARCH)		      \
-# 		     $(INCLUDES) $(CLANG_BPF_SYS_INCLUDES)		      \
-# 		     -c $(filter %.c,$^) -o $(patsubst %.bpf.o,%.tmp.bpf.o,$@)
-# 	$(Q)$(BPFTOOL) gen object $@ $(patsubst %.bpf.o,%.tmp.bpf.o,$@)
+# 	$(Q)$(CLANG) -g -fstack-protector -O2 -target bpf -D__TARGET_ARCH_$(ARCH) $(INCLUDES) $(CLANG_BPF_SYS_INCLUDES) -c $(filter %.c,$^) -o $@
+# 	$(Q)$(LLVM_STRIP) -g $@ # strip useless DWARF info
 #
 # # Generate BPF skeletons
 # $(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(OUTPUT) $(BPFTOOL)
@@ -191,10 +99,6 @@ eBPF_ls: eBPF_ls.c
 # 	$(call msg,CC,$@)
 # 	$(Q)$(CC) $(CFLAGS) $(INCLUDES) -c $(filter %.c,$^) -o $@
 #
-# $(patsubst %,$(OUTPUT)/%.o,$(BZS_APPS)): $(LIBBLAZESYM_OBJ)
-#
-# $(BZS_APPS): $(LIBBLAZESYM_OBJ)
-#
 # # Build application binary
 # $(APPS): %: $(OUTPUT)/%.o $(LIBBPF_OBJ) | $(OUTPUT)
 # 	$(call msg,BINARY,$@)
@@ -205,3 +109,37 @@ eBPF_ls: eBPF_ls.c
 #
 # # keep intermediate (.skel.h, .bpf.o, etc) targets
 # .SECONDARY:
+
+TARGET = eBPF_ls
+ARCH = $(shell uname -m | sed 's/x86_64/x86/' | sed 's/aarch64/arm64/')
+
+BPF_OBJ = ${TARGET:=.bpf.o}
+USER_C = ${TARGET:=.c}
+USER_SKEL = ${TARGET:=.skel.h}
+
+all: $(TARGET) $(BPF_OBJ) eBPF_ls
+.PHONY: all 
+
+$(TARGET): $(USER_C) $(USER_SKEL) 
+	gcc -Wall -o $(TARGET) $(USER_C) -L../libbpf/src -l:libbpf.a -lelf -lz
+
+%.bpf.o: %.bpf.c vmlinux.h
+	clang \
+	    -target bpf \
+        -D __TARGET_ARCH_$(ARCH) \
+	    -Wall \
+	    -O2 -g -o $@ -c $<
+	llvm-strip -g $@
+
+$(USER_SKEL): $(BPF_OBJ)
+	bpftool gen skeleton $< > $@
+
+vmlinux.h:
+	bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
+
+clean:
+	- rm $(BPF_OBJ)
+	- rm $(TARGET)
+
+eBPF_ls: eBPF_ls.c
+	gcc -Wall -o eBPF_ls eBPF_ls.c -L../libbpf/src -l:libbpf.a -lelf -lz -lcyaml
