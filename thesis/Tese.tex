@@ -13,6 +13,7 @@
 
 
 \usepackage{fontspec}
+\usepackage{pdfpages}
 \usepackage{comment}
 \setmainfont{Georgia}
 \usepackage{hyphenat}
@@ -63,6 +64,8 @@
 %%O comando a seguir permite que as costas da página de rosto não inclua cabeçalho mas rodapé (escolher entre este e outro)
 %\newpage\mbox{}\thispagestyle{plain}\fancyhead{}
 
+\newpage
+\includepdf{integridade.pdf}
 
 %%Dedicatória
 %\newpage 
@@ -82,11 +85,20 @@
 
 
 %%Agradecimentos 
-%\newpage 	
-%\section*{\titulos{Agradecimentos}}
-%\vspace{0.5cm}
+\newpage
+\section*{\titulos{Acknowledgments}}
+\vspace{0.5cm}
+Firstly, I would like to extend my deepest gratitude to my family, who have always shown me unconditional support and love, without them nothing of what I do and did would be possible.
+
+To my friends who even in my darkest moments have shown me that life is beautiful. You make life worth living, I cannot thank you enough for that.
+
+To Rute and Diogo, for showing me that we should never forget who we are in the journey of life, I love you deeply.
+
+I am immensely grateful to my coordinators and supervisor, Professor Simão, Professor Manuela and André. Your guidance has proved invaluable during the course of this work, and your knowledge has forever changed my view on the world of informatics.
+
+To my parents and sister, who were there from the beginning and continue to support me and my endeavours, I love you all.
 %Agradecer a quem de direito (opcional)
-%\cleardoublepage
+\cleardoublepage
 
 
 %%Prefácio 
@@ -98,11 +110,23 @@
 
 
 %%Resumo+palavras-chave
-%\newpage 	
-%\section*{\titulos{Resumo}}
-%\vspace{0.5cm}
+\newpage
+\section*{\titulos{Resumo}}
+\vspace{0.5cm}
+Este relatório de estágio aborda os desafios e soluções associadas aos problemas de \textit{data exfiltration} identificados por parte da Scalabit.
+A pesquisa desenvolvida durante o curso deste estágio tem como tecnologia base eBPF, que se apresenta como uma tecnologia emergente. O objetivo desta mesma pesquisa é o de estudar a exequibilidade de uma solução baseada nesta tecnologia para o problem de data exfiltration em máquinas cujos utilizadores têm \textit{sudo access}.
+
+O documento encontra-se organizado em várias secções cruciais, começando com uma introdução delineando o problema, a solução a ser estudada e fazendo uma contextualização da empresa onde o estágio foi realizado. Segue-se uma revisão sobre o estado da arte de ferramentas que façam uso de seegurança kernel based e de eBPF em si. São apresentadas nesta revisão também algumas ferramentas clássicas, sendo comparadas com eBPF.
+
+Um estudo de caso preliminar é então apresentado, focando na implementação de uma aplicação eBPF que consiga listar um utilizador e a diretoria em que o mesmo está presente aquando de uma \textit{system call} específica. Este estudo serve como uma prova preliminar de que o eBPF seria uma ferramenta adequada ao problema em mão, fornecendo \textit{insights} valiosos sobre o eBPF e o kernel em si.
+
+O trabalho central deste estágio é o deseenvolvimento de uma aplicação em eBPF, que limita \textit{system calls} por utilizador e diretoria, efetivamente usando \textit{data hiding} como um método para prevenir \textit{data exfiltration}. Esta ferramenta destina-se a ser implementada em várias máquinas onde os utilizadores têm \textit{sudo access}. O caso de uso esperado e os testes corridos sob a aplicação são apresentados.
+
+Por fim, o relatório apresenta uma análise crítica da ferramenta desenvolvida e do trabalho realizado durante este período de estágio. São analisadas as vulnerabilidades da aplicação em si e a maneira como as mesmas foram enfrentadas.
+
+Em resumo, este relatório pretende apresentar aquele que foi o trabalho investigativo e de desenvolvimento realizado ao longo do estágio na Scalabit.
 %Resumo do trabalho
- 
+
 %\vspace{2.2cm}
 %{\titulos{Palavras-chave}}
 %
@@ -120,17 +144,30 @@
 
 
 %%abstract+keywords
-%\newpage 	
-%\section*{\titulos{Abstract}}
-%\vspace{0.5cm}
+\newpage
+\section*{\titulos{Abstract}}
+\vspace{0.5cm}
 %Abstract in English
-%
-%\vspace{2.2cm}
-%{\titulos{Keywords}}
-% 
-%\vspace{0.8cm}
-%Keywords in English
-%\cleardoublepage
+This internship report addresses the challenges and solutions associated with the data exfiltration problems identified by Scalabit.
+The research carried out during the course of this internship is based on eBPF, which is an emerging technology. The aim of this research is to study the feasibility of a solution based on this technology for the data exfiltration problem on machines whose users have sudo access.
+
+The document is organized into several crucial sections, starting with an introduction outlining the problem, the solution to be studied and a contextualization of the company where the internship was carried out. This is followed by a review of the state of the art of tools that make use of kernel-based security and eBPF itself. Some classic tools are also presented in this review and compared with eBPF.
+
+A preliminary case study is then presented, focusing on the implementation of an eBPF application that can list a user and the directory in which they are present when a specific system call is made. This study serves as a preliminary proof that eBPF would be a suitable tool for the problem at hand, providing valuable insights about eBPF and the kernel itself.
+
+The core work of this internship is the development of an eBPF application, which limits system calls on a per user and directory basis, effectively using data hiding as a method to prevent data exfiltration. This tool is intended to be deployed on several machines where users have sudo access. The expected use case and tests ran are presented alongside the tool itself.
+
+Finally, the report presents a critical analysis of the tool developed and the work carried out during this internship period. The vulnerabilities of the application itself and the way in which they were dealt with are analyzed.
+
+In summary, this report aims to present the research and development work carried out during my internship at Scalabit.
+
+
+\vspace{2.2cm}
+{\titulos{Keywords}}
+\vspace{0.8cm}
+
+eBPF, Kernel-Based Security, Linux Kernel, Data Exfiltration, Data Hiding
+\cleardoublepage
 
 
 %%Índice
@@ -142,7 +179,7 @@
 
 %%Lista de figuras
 \listoffigures
-\cleardoublepage	
+\cleardoublepage
 %
 %
 %%%Lista de tabelas
@@ -154,25 +191,25 @@
 \newpage
 \section*{\titulos{Acronymms}}
 \vspace{0.5cm}
-  \begin{tabularx}{\linewidth}{c p{0.5cm} Y}
-    eBPF & & Extended Berkeley Packet Filter\cr 
-    BPF & & Berkeley Packet Filter\cr
-    JIT & & Just In Time\cr 
-    CO-RE & & Compile Once - Run Everywhere\cr 
-    BTF & & BPF Type Format\cr 
-    LSM & & Linux Security Module\cr
-    TOCTOU & & Time of Check to Time of Use\cr 
-  \end{tabularx}
- \cleardoublepage
-  
+\begin{tabularx}{\linewidth}{c p{0.5cm} Y}
+	eBPF   &  & Extended Berkeley Packet Filter\cr
+	BPF    &  & Berkeley Packet Filter\cr
+	JIT    &  & Just In Time\cr
+	CO-RE  &  & Compile Once - Run Everywhere\cr
+	BTF    &  & BPF Type Format\cr
+	LSM    &  & Linux Security Module\cr
+	TOCTOU &  & Time of Check to Time of Use\cr
+\end{tabularx}
+\cleardoublepage
+
 
 %% Os capitulos são inseridos a partir daqui 
- 
-\mainmatter
 
+\mainmatter
 \include{Intro}
 \include{stateofart}
 \include{problemstatement}
+\include{critical}
 \include{conclusion}
 
 
@@ -205,7 +242,7 @@
 
 %%Anexos
 %\appendix
- 
+
 %\include{Anexos}
 %\cleardoublepage
 

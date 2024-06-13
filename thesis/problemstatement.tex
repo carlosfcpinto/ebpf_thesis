@@ -1,70 +1,40 @@
-    
-\chapter{Problem Statement, Experiments and Work Plan}
+\chapter{Case Study}
 
 \section{Introduction}
-The Problem Statement, Proposed Solution, Experiments, and Work Plan chapter is a crucial component of the thesis as it outlines the research problem, a possible solution to it, an experiment to further sustain that solution, and the plan for executing the research. In this chapter, we aim to present a clear and concise description of the problem we are solving, why it is important, and why the proposed solution is a valid one. The chapter will also include a detailed description of the experiments that will be conducted to validate the solution, as well as the work plan that outlines the tasks and the timeline for executing the research.
+The Case Study chapter is a crucial component of the report as it outlines the problem, the proposed solution to it and an experiment to further sustain that solution. In this chapter, we aim to present a clear and concise description of the problem we are solving, why it is important, and why the proposed solution is a valid one. The chapter will also include a detailed description of the experiment that was conducted to validate the solution, as well as the findings from it.
+In this chapter, the preliminary experiment will be presented, which served as the basis to conduct the study of eBPF to tackle the problem of data exfiltration being faced by Scalabit. This experiment leverages eBPF's capabilities to access certain kernel functions and hook onto system calls.
 
-\section{The Problem}
-
-A common data exfiltration definition is the theft or unauthorized removal or movement of any data from a device, typically involving a cyber criminal stealing data from personal or corporate devices. 
-The definition more relevant to this dissertation is that of data exportation and extrusion, posing serious problems for organizations. Failing to control information security could mean the loss of intellectual property or cause reputational and financial damage to an organization. 
-
-The problem being faced is that of preventing data exfiltration inside virtual machines. 
-This problem has seen various approaches to being solved, such as static configurations, which work best when configured statically during the provisioning of a machine, becoming brittle to operate when deployed across a fleet of machines and in the face of changing policies.
-
-
-\section{Proposed Solution}
-The proposed solution aims to tackle the challenges mentioned in the previous section by providing a method of easily load tools with the intention of preventing data exfiltration, leakage or theft. To achieve this, the solution leverages the advantages of kernel based security, as well as the flexibility and ease of use of eBPF. 
-
-By using these approaches, the focus of this solution is the ease of deployment and verified security that eBPF provides. 
-
-The main object of this thesis is the development of an eBPF application preventing data exfiltration from virtual machines, such that one policy can be extended across various machines. As stated above, the classical approach of static configurations, although working when configured statically during the provisioning of the machine, become hard to operate when deployed across a fleet of machines. 
-
-This solution will serve the purpose of restricting services and capabilities inside the kernel, based on a per user or service approach, effectively armoring the system from unwanted accesses, either to services or files, preventing data exfiltration from said machines.
-
-The resulting application would then go through a formal verification process on the kernel side of the application, ensuring that the rules to be applied are only that. 
-
-As of the writing of this document, there's no knowledge of projects or documents that describe a similar solution to the one proposed. There are several eBPF based tools for security purposes, mentioned in the previous chapter, but none of these leverage formal verification, and as such, this solution presents itself as both an academic and business opportunity.
-
-The choice to formally verify this tool aims at ensuring the safety and correctness of said program. eBPF programs, although already a subject of formal methods through the verifier, do not currently ensure with absolute certainty the safety and correctness of the implementation attempted. 
-
-In the next section, an experiment will be demonstrated to showcase the feasibility and practicality of our objective. This first study is designed to validate our ideas and provide a foundation for future development. While we did not develop a full-fledged tool, this experiment serves as a crucial first step in demonstrating that there's a potential for the use of eBPF to prevent data exfiltration and leakage. 
 
 In conclusion, the solution proposes to overcome the challenges mentioned in the previous section by providing a method of dynamically implement security policies, enforced at kernel level, to a fleet of machines, without the hassle needed with classical methods.
 
 
-\section{Experiments}
+\section{Preliminary Experiments}
 
-eBPF has proven itself as a flexible and secure tool for security and observability. The experiment aims to test and demonstrate the capabilities of this tool, by reacting to certain system calls, identifying the user who made it and where it came from, with the purpose of, in the future, extend it to not only present the system call made but to also act upon it, potentially preventing data exfiltration using this method. In this section we will elaborate on why eBPF is an ideal fit for this experiment and explore the inner workings of it.
+The study of eBPF and its security capabilities was made to ensure that this solution would be feasible. The experiment consisted in the development of an eBPF program that would react to the \texttt{chdir} system call, so that the contents of the folder, passed as a parameter of this kernel function, and the user responsible for said call would be flushed to \texttt{stdout}. To achieve this the CO\-RE approach was used, to guarantee compatibility between kernel versions. The different steps of this experiment are documented in the following subsections.
 
-The experiment at hand involves the implementation of an eBPF program, both user side and kernel side code, using the CO-RE approach, so that when a call is made to \texttt{chdir} is made the program will present the contents of said folder and identify the user who made the call, essentially behaving as an \texttt{ls} command. 
-
-We will also delve into the files that make up a typical eBPF application and explain how the program was developed based on the CO-RE approach. 
-
-In conclusion, this experiment will serve as a demonstration of eBPF's capability from a security stand point. 
 
 \subsection{\textbf{eBPF implementation of \texttt{ls}}}
 
-This experiment proved itself relevant as a means to be more familiarized with eBPF's typical struccture as well as its capabilities. 
-To achieve that goal, it is important to understand the different files involved in such applications. Normally, there will be a file for the kernel side of the application, as well as one for the user side. We shall call these \texttt{eBPF\_ls.bpf.c} and \texttt{eBPF\_ls.c} for the kernel side and the user side, respectively. 
+This experiment proved itself relevant as a means to be more familiarized with eBPF's typical struccture as well as its capabilities.
+To achieve that goal, it is important to understand the different files involved in such applications. Normally, there will be a file for the kernel side of the application, as well as one for the user side. We shall call these \texttt{eBPF\_ls.bpf.c} and \texttt{eBPF\_ls.c} for the kernel side and the user side, respectively.
 
 \subsubsection{\texttt{eBPF\_ls.bpf.c}}
-\texttt{eBPF\_ls.bpf.c} will contain the code meant to be run at kernel level, meaning that it can define a hookpoint to a certain system call. This is achieved by 
+\texttt{eBPF\_ls.bpf.c} will contain the code meant to be run at kernel level, meaning that it can define a hookpoint to a certain system call. This is achieved by
 
 
 \begin{lstlisting}
     SEC("ksyscall/chdir")
 \end{lstlisting}
-which defines that we are only interested in running this program when a system call to \texttt{chdir} is made. 
+which defines that we are only interested in running this program when a system call to \texttt{chdir} is made.
 
-Hence, when such system call is made this program is triggered. The program then acts accordingly. 
+Hence, when such system call is made this program is triggered. The program then acts accordingly.
 
 \begin{lstlisting}
     int BPF_KPROBE_SYSCALL(hello, const char *name){
         struct data_t data = {};
         struct user_msg_t *p; 
 \end{lstlisting}
-In the above code snippet we make use of the \texttt{BPF\_KPROBE\_SYSCALL} macro defined in \texttt{libbpf} that allows to acces the argument of a system call by name. The only argument the \texttt{chdir} accepts is the name of the destin directory. We can the write the data accessed to a perf buffer so that is accessible in the user side of the application. 
+In the above code snippet we make use of the \texttt{BPF\_KPROBE\_SYSCALL} macro defined in \texttt{libbpf} that allows to acces the argument of a system call by name. The only argument the \texttt{chdir} accepts is the name of the destin directory. We can the write the data accessed to a perf buffer so that is accessible in the user side of the application.
 
 \begin{lstlisting}
     data.pid = bpf_get_current_pid_tgid() >> 32;
@@ -72,22 +42,22 @@ In the above code snippet we make use of the \texttt{BPF\_KPROBE\_SYSCALL} macro
 
     bpf_probe_read_user_str(&data.path, sizeof(data.path), name);
 \end{lstlisting}
-The first two lines are used so that we can access the process id and the user id that made the system call. 
+The first two lines are used so that we can access the process id and the user id that made the system call.
 The \texttt{bpf\_probe\_read\_user\_str} is an helper function that copies data from an unsafe address to the perf buffer output, in this case containing the argument to the \texttt{chdir} system call, the process id and user id from where the call was made.
-After the data has been written, we can then share it with user space code using the following line: 
+After the data has been written, we can then share it with user space code using the following line:
 \begin{lstlisting}
 bpf_perf_event_output(ctx, &output, BPF_F_CURRENT_CPU, &data, sizeof(data));
 \end{lstlisting}
-This helper function writes the data into the perf buffer output, making it accessible from user space. 
-Finally, there is another macro defining a license string, being a crucial requirement for eBPF programs. 
+This helper function writes the data into the perf buffer output, making it accessible from user space.
+Finally, there is another macro defining a license string, being a crucial requirement for eBPF programs.
 \begin{lstlisting}
     char LICENSE[] SEC("license") = "Dual BSD/GPL";
 \end{lstlisting}
 
-This sums up the steps need in the kernel side of the application, creating a \texttt{kprobe} to the \texttt{chdir} system call, and sending the directory that made the call to the user side of the application. 
+This sums up the steps need in the kernel side of the application, creating a \texttt{kprobe} to the \texttt{chdir} system call, and sending the directory that made the call to the user side of the application.
 
 \subsubsection{\texttt{eBPF\_ls.c}}
-\texttt{eBPF\_ls.c} will contain the code to be run in user space, reacting to the data sent from the kernel side of the application. It will start by loading the BPF skeleton, containing handy functions to manage the lifecycle of the program, such as loading it into the kernel. 
+\texttt{eBPF\_ls.c} will contain the code to be run in user space, reacting to the data sent from the kernel side of the application. It will start by loading the BPF skeleton, containing handy functions to manage the lifecycle of the program, such as loading it into the kernel.
 \begin{lstlisting}[numbers=left]
 int main() {
   struct eBPF_ls_bpf *skel;
@@ -112,7 +82,7 @@ int main() {
 \end{lstlisting}
 
 Line 8 in the code snippet above creates a \texttt{skel} structure representing all the maps and programs defined in the ELF bytes, loading them into the kernel. Line 14 attaches the program to the appropriate event, returning and error if it was unsuccessful.
-We can then create a structure to handle the perf buffer output, as presented below. 
+We can then create a structure to handle the perf buffer output, as presented below.
 \begin{lstlisting}[numbers=left]
 pb = perf_buffer__new(bpf_map__fd(skel->maps.output), 8, handle_event,
                       lost_event, NULL, NULL);
@@ -123,8 +93,8 @@ if (!pb) {
   return 1;
 }
 \end{lstlisting}
-The \texttt{handle\_event} and \texttt{lost\_event} are functions that handle the events captured when polling the perf buffer. 
-The perf buffer will then be continuously polled: 
+The \texttt{handle\_event} and \texttt{lost\_event} are functions that handle the events captured when polling the perf buffer.
+The perf buffer will then be continuously polled:
 \begin{lstlisting}[numbers=left]
 while (true) {
     err = perf_buffer__poll(pb, 10000000 /* timeout, ms */);
@@ -140,7 +110,7 @@ while (true) {
   }
 \end{lstlisting}
 
-When there is an event in the perf buffer output, we can expect to find the name of the directory that was passed to the \texttt{chdir} system call, as well as the user id that made the system call. As such, the \texttt{handle\_event} function is triggered, and we can then iterate over the directory to display its files. 
+When there is an event in the perf buffer output, we can expect to find the name of the directory that was passed to the \texttt{chdir} system call, as well as the user id that made the system call. As such, the \texttt{handle\_event} function is triggered, and we can then iterate over the directory to display its files.
 \begin{lstlisting}[numbers=left]
 void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz) {
   struct data_t *m = data;
@@ -172,7 +142,7 @@ We print the user id that made the system call and then print the contents of th
 
 
 \subsubsection{Makefile}
-The Makefile for this application, being based on the CO-RE approach has several options that are worth digging into. 
+The Makefile for this application, being based on the CO-RE approach has several options that are worth digging into.
 First off, when compiling both the user side and kernel side it is needed to pass the \texttt{\-g} flag to the Clang compiler, so that it includes debug information, that is necessary for BTF. The \texttt{\-O2} optimization flag also needs to be passed, in order for Clang to produce BPF bytecode that can pass the verification process. The target architecture needs to be specified in order to use certain macros defined in \texttt{libbpf}. Joining all of these we achieve the following to build BPF code:
 \begin{lstlisting}
 %.bpf.o: %.bpf.c vmlinux.h
@@ -184,20 +154,20 @@ First off, when compiling both the user side and kernel side it is needed to pas
 	llvm-strip -g $@
 \end{lstlisting}
 
-We then need to generate BPF skeletons, which contain several useful functions to handle the lifecycle of the program, we use \texttt{bpftool} to achieve this, which uses the eBPF object in ELF file format to generate said skeletons. 
+We then need to generate BPF skeletons, which contain several useful functions to handle the lifecycle of the program, we use \texttt{bpftool} to achieve this, which uses the eBPF object in ELF file format to generate said skeletons.
 \begin{lstlisting}
 $(USER_SKEL): $(BPF_OBJ)
 	bpftool gen skeleton $< > $@
 \end{lstlisting}
 
-We then generate the header file \texttt{vmlinux.h}, containing all the data structure information about the kernel that is needed in a BPF program. 
+We then generate the header file \texttt{vmlinux.h}, containing all the data structure information about the kernel that is needed in a BPF program.
 
 \begin{lstlisting}
 vmlinux.h:
 	bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h
 \end{lstlisting}
 
-Lastly, we can build the user space code, using the line: 
+Lastly, we can build the user space code, using the line:
 \begin{lstlisting}
 eBPF_ls: eBPF_ls.c
 	gcc -Wall -o eBPF_ls eBPF_ls.c -L../libbpf/src -l:libbpf.a -lelf -lz
@@ -205,82 +175,453 @@ eBPF_ls: eBPF_ls.c
 
 The typical structure for an eBPF application based on the CO-RE consists then of these three files, containing the eBPF program itself, the user side code and the Makefile specific to the application.
 
+
 \subsection{Conclusion}
-With this experiment, we were able to delve deeper into eBPF's capabilities, presenting a crude example of what is the goal of this dissertation, proving the usability of eBPF from a security standpoint. An application that monitors the \texttt{chdir} system call was developed, showing the target directory and the user who made the system call. 
-
-\section{Future Tasks}
-The plan outlined below highlights the tasks inteded to take place in this dissertation project. It should however be noted that the direction of the project may evolve and change as we progress, leading to potential modifications to the plan. Nonetheless, this serves as a starting point for the remainder of the project. 
-
-\textbf{Task 1:} Implementation of an eBPF application capable of preventing data exfiltration, based on user specific policies, restraining certain files or processes from said users. The policies will be implemented in a specific format, so that they can change without having the need to hard code restricted users. 
-
-\textbf{Task 2:} Testing the application. In this step the application will undergo rigorous testing so as to be deployed across a fleet of machines with some certainty that it works as intended.
-
-\textbf{Task 3:} Formal verification of the application. This step will involve the design of a formal verification tool to verify eBPF code. Some approaches are to be considered, but to date only the verifier has been subject to formal verification using Coq. In this step we will continue to build on the knowledge gained from the development of the application to gain a clear overview of the best approach to formal verification. 
-
-\textbf{Task 4:} Writing of the thesis. The thesis will present the research results and provide conclusions based on the work performed in the previous tasks. The writing of the thesis will be a final step, but will be done concurrently with the other tasks.
-
-In addition to these tasks, additional features or improvements to existing ones might be added, depending on the results obtained. the aim is to continue advancing the state of the art in the field of eBPF security and particularly the formal verification of such tools.
-\\
-
-Pictured below is the work plan, in the form a Gantt chart, structured for a 6 month schedule.
-
-
-\begin{figure}[h]
-    \begin{center}
-    
-    \begin{ganttchart}[y unit title=0.4cm,
-    y unit chart=0.5cm,
-    vgrid,hgrid, 
-    title label anchor/.style={below=-1.6ex},
-    title left shift=.05,
-    title right shift=-.05,
-    title height=1,
-    progress label text={},
-    bar height=0.7,
-    group right shift=0,
-    group top shift=.6,
-    group height=.3]{1}{24}
-    %labels
-    \gantttitle{Plan}{24} \\
-    \gantttitle{M1}{4} 
-    \gantttitle{M2}{4} 
-    \gantttitle{M3}{4} 
-    \gantttitle{M4}{4} 
-    \gantttitle{M5}{4} 
-    \gantttitle{M6}{4} \\
-    %tasks
-    \ganttbar{Task 1}{1}{8} \\
-    \ganttbar{Task 2}{9}{12} \\
-    \ganttbar{Task 3}{13}{23} \\
-    \ganttbar{Task 4}{1}{24} \\
-    \end{ganttchart}
-    \end{center}
-    \caption{Work Plan}
-
-\end{figure}
-
+With this experiment, the capabilities of eBPF had been proven, from both a security and usability perspective. An application that monitors the \texttt{chdir} system call was developed, where we had access to the target directory and the user who made said system call.
 
 \section{Conclusion}
-This chapter provides a concise introduction to the problem and the proposed solution. It also discusses the experiments done to uphold the claim that the solution is a feasible one, and lastly it uncovers the plan for the future tasks to be developed. 
-eBPF-based security, as shown in the example, offers itself as an ingineous solution to the problem stated.
+This chapter provides a concise introduction to the problem and the proposed solution. It also discusses the experiments done to uphold the claim that the solution is a feasible one.
+eBPF-based security, as shown in the preliminary example, offered itself as an ingineous solution to the problem stated.
 
-\begin{comment}
-In addition to these tasks, we may consider incorporating additional features or making improvements to existing features, depending on the results of our research and the progress of our work. The aim is to continue advancing the state of the art in the field of blockchain consensus algorithms, and to provide a comprehensive understanding of the various protocols and tools that are available for improving the performance and efficiency of blockchain networks.
 
+\chapter{Tool Development}
+
+\section{Introduction}
+The tool development chapter aims to present a detailed description of how eBPF was implemented in the resulting application, the tools used, the rationale behind their selection and the challenges encountered during the implementation of this solution.
+This chapter focuses on the development of two essential tools to attempt to solve the problem faced by the company. The first tool is the eBPF application itself, which disallows system calls based on values stored inside BPF maps. The second tool is a shared library which replaces the \texttt{readdir} system call, effectively hiding the process ID of the program being ran. Together, these tools aim to address the complexities and challenges of data exfiltration prevention.
+
+\section{eBPF Development}
+The development of this tool made use of two major technologies surrounding eBPF, which were the CO-RE approach, which was previously presented, and BPF-LSM. These choices stemmed from a need to have an application that was capable of being ran on different kernel versions, and the fact that it needed to be stable, using the stable hookpoints provided by BPF-LSM.
+Although these choices seem quite trivial now, their choice was made taking into account the state of the art in eBPF-based tooling for security.
+
+The main goal of the application to be developed was limiting the access of users to certain sensitive files, thus using data hiding as a method to prevent data exfiltration. One of the main purposes was that the application would be capable of reading a configuration from a yaml file, and restricting users based on said configuration.
+
+The implementation started with the preliminary example provided in the previous chapter, being that the changes made to the code consisted mainly to the eBPF side of the code.
+The choice was made for the application to limit access to files provided in a yaml file at loading time. This file contains a user ID that can access and alter those files, acting as a maintainer of them. Any other user that tries to access it has the attempt revoked. The hookpoints in the eBPF program that ensure that this happens are in three different system calls, being \texttt{path\_chmod}, \texttt{file\_open}, \texttt{path\_rename}. The \texttt{chmod} system call was chosen to make use of Linux's file policies, so that the eBPF application only acts as an additional layer of security on top of this. The \texttt{file\_open} system call was trivially chosen as well, in order to prevent that unauthorized users would not be able to open the file. Lastly, the \texttt{path\_rename} system call was found to be useful in order to prevent users from moving or renaming the files, seeing that the files are provided to the yaml file in the string format, containing its full path, thus allowing a user to change a file named \textit{test} to \textit{test2} and effectively gain access to it.
+
+\subsection{YAML file}
+The yaml file provided to the application, which is then parsed from the user side part of the eBPF program, with name \texttt{config.yaml}, consists of an user ID, and a list of files\/directories. For example:
+
+\begin{lstlisting}
+  uid: 1124
+  directory:
+      - /home/user/testfile3
+\end{lstlisting}
+
+In this example the user whose ID is 1124 is the sole maintainer of the file with the path provided in \texttt{directory}. Any attempt of another user to make the system calls mentioned previously on the file is denied.
+This file is then parsed using \texttt{libcyaml}, an open source library to parse yaml files into C structs. The struct is:
+\begin{lstlisting}
+  struct uid_struct {
+    int uid;
+    char **directory;
+    unsigned directory_count;
+  };
+\end{lstlisting}
+
+The uid and directory fields are self-explanatory, but the field directory\_count exists so that when parsing the yaml file the library can store how many entries there are in the directories parameter.
+
+The parsing of the file is then as trivial as:
+
+\begin{lstlisting}
+  err = cyaml_load_file(argv[ARG_PATH_IN], &config, &top_schema,
+                        (cyaml_data_t **)&n, NULL);
+  if (err != CYAML_OK) {
+    fprintf(stderr, "ERROR: %s\n", cyaml_strerror(err));
+    return EXIT_FAILURE;
+  }
+\end{lstlisting}
+
+The name of the yaml is passed as an argument to the program itself. The \texttt{config} contains the CYAML config, which can be changed between calls to the function. The \texttt{top\_schema} is the CYAML value schema for the top level mapping, where it is defined that the data to be read can be stored in a struct of type \texttt{uid\_struct}.
+
+The configuration read from the yaml file could change between runs of the eBPF program and, according to its contents, the application would then disallow the specified system calls on the files present in the yaml file to any user that was not its maintainer.
+
+
+\subsection{User side code}
+The user side of the code in this particular application is only responsible for loading the eBPF program and populating its maps with the correct information.
+This is achieved with the CO-RE approach and the use of a skeleton which configures almost everything for us.
+
+With the skeleton generated, we simply need to open and load the file into the eBPF virtual machine, which then runs it for us. This is achieved by using \texttt{bpftool}, which is mentioned in the previous chapters. Using this tool, opening and loading an eBPF program is as simple as:
+
+\begin{lstlisting}
+  skel = eBPF_ls_bpf__open_and_load();
+  if (!skel) {
+    printf("Failed to open BPF object\n");
+    return 1;
+  }
+\end{lstlisting}
+
+We can then access the \texttt{skel} variable to make changes to the eBPF program, such as loading maps. The \texttt{skel} variable is of type \texttt{struct eBPF\_ls\_bpf}, which reflects the name of the program we used, being that this struct is also auto generated and it has its fields:
+
+\begin{lstlisting}
+struct eBPF_ls_bpf {
+	struct bpf_object_skeleton *skeleton;
+	struct bpf_object *obj;
+	struct {
+		struct bpf_map *heaps_map;
+		struct bpf_map *output;
+		struct bpf_map *directories;
+		struct bpf_map *my_config;
+		struct bpf_map *rodata;
+	} maps;
+	struct {
+		struct bpf_program *path_chmod;
+		struct bpf_program *file_open;
+		struct bpf_program *path_rename;
+	} progs;
+	struct {
+		struct bpf_link *path_chmod;
+		struct bpf_link *file_open;
+		struct bpf_link *path_rename;
+	} links;
+};
+\end{lstlisting}
+
+As we can see from above, the struct consists of a skeletong and a bpf object, the maps used by the program, (shown by \texttt{bpf\_map}), the different bpf programs that a single file may contain, (shown by \texttt{bpf\_program}), and the hookpoints/links needed by each of the programs, which in this case coincide, since we gave the name of the hookpoints to the programs themselves.
+
+This allows us then to access and populate the directories map from the user side of the code, having parsed the yaml file. It is as simple as:
+
+\begin{lstlisting}
+  for (i = 0; i < n->directory_count; i++) {
+    strncpy(aux, n->directory[i], sizeof(aux));
+    bpf_map__update_elem(skel->maps.directories, &aux,
+    sizeof(aux), &n->uid, sizeof(n->uid), 0);
+  }
+\end{lstlisting}
+
+The yaml file is stored in struct \texttt{n}, and we update the map by iterating over the entries in said struct and calling the function \texttt{bpf\_map\_update\_element}, which stores the \texttt{aux} variable, containing the name of the directory, and the \texttt{n->uid}, containing the \texttt{uid} to which the directory is associated in the \texttt{skel->maps.directories}, which points to the directories eBPF map.
+
+After doing this, the maps are frozen, so that no new entries can be added from a call to \texttt{bpftool map update}. This is achieved by running the program from a script, which handles this in the elegant manner of simply calling \texttt{bpftool map freeze}, which freezes the map from the user side. The \texttt{bpftool} call is the made unavailable to the users.
+
+We then attach the skeleton, and the program is running.
+
+
+\subsection{Kernel side code}
+
+From the kernel side of the eBPF application, the behaviour can be boiled down to attaching to the LSM hookpoints and then allowing the access to the system call or not according to the values contained in the eBPF map. We can abstract this for all three applications, so the example shown is in all three hookpoints.
+
+\begin{lstlisting}
+  directory_flag = bpf_map_lookup_elem(&directories, &x.path);
+  if (directory_flag != 0) {
+    if (*directory_flag == uid) {
+      bpf_printk("user %d has access to file", *directory_flag);
+      return 0;
+    }
+    bpf_printk("Aux not empty %d\n ", uid);
+    bpf_printk("Chmod not allowed to %s", file_path);
+    return -EPERM;
+  } else {
+    bpf_printk("aux is empty");
+    bpf_printk("Chmod allowed to %s %d", file_path, uid);
+    return 0;
+    }
+  }
+\end{lstlisting}
+
+Essentialy we have the directory flag showing us whether this is a directory to be monitored or not, and if so we match the uid that made the call to the one contained in the bpf map, if it coincides we allow the system call to go through, returning 0, but if it doesn't we return \texttt{\-EPERM}, which disallows the system call from continuing. This logic is implemented in the three hookpoints in the same way.
+
+One of the challenges, specifically to locate ourselves from where the system call was made was to get the full path from a \texttt{struct path}, as it is defined in the kernel. This proved particularly hard since eBPF defines a stack limit of 512 bytes, forcing us to make use of a per-CPU array to store the full path. We can imagine that when making a system call, from an example directory \texttt{/home/test/this}, the \texttt{struct path} only contains \texttt{this}, forcing us to go through each of its parent directories to effectively remount the full path. That is done by using the function below, which will be explained next.
+\newpage
+
+\begin{lstlisting}[numbers=left]
+statfunc long get_path_str_from_path(u_char **path_str, 
+const struct path *path, struct buffer *out_buf) {
+
+  long ret;
+  struct dentry *dentry, *dentry_parent, *dentry_mnt;
+  struct vfsmount *vfsmnt;
+  struct mount *mnt, *mnt_parent;
+  const u_char *name;
+  size_t name_len;
+
+  dentry = BPF_CORE_READ(path, dentry);
+  vfsmnt = BPF_CORE_READ(path, mnt);
+  mnt = container_of(vfsmnt, struct mount, mnt);
+  mnt_parent = BPF_CORE_READ(mnt, mnt_parent);
+
+  size_t buf_off = HALF_PERCPU_ARRAY_SIZE;
+
+#pragma unroll
+  for (int i = 0; i < MAX_PATH_COMPONENTS; i++) {
+
+    dentry_mnt = BPF_CORE_READ(vfsmnt, mnt_root);
+    dentry_parent = BPF_CORE_READ(dentry, d_parent);
+
+    if (dentry == dentry_mnt || dentry == dentry_parent) {
+      if (dentry != dentry_mnt) {
+        // We reached root, but not mount root - escaped?
+        break;
+      }
+      if (mnt != mnt_parent) {
+        // We reached root, but not global root 
+	// continue with mount point path
+        dentry = BPF_CORE_READ(mnt, mnt_mountpoint);
+        mnt_parent = BPF_CORE_READ(mnt, mnt_parent);
+        vfsmnt = __builtin_preserve_access_index(&mnt->mnt);
+        continue;
+      }
+      // Global root - path fully parsed
+      break;
+    }
+
+    // Add this dentry name to path
+    name_len = LIMIT_PATH_SIZE(BPF_CORE_READ(dentry, d_name.len));
+    name = BPF_CORE_READ(dentry, d_name.name);
+
+    name_len = name_len + 1; // add slash
+    // Is string buffer big enough for dentry name?
+    if (name_len > buf_off) {
+      break;
+    }
+    // satisfy verifier
+    volatile size_t new_buff_offset = buf_off - name_len;
+    ret = bpf_probe_read_kernel_str(&
+    // satisfy verifier
+    (out_buf->data[LIMIT_HALF_PERCPU_ARRAY_SIZE(new_buff_offset)]), 
+      name_len, name);
+    if (ret < 0) {
+      return ret;
+    }
+
+    if (ret > 1) {
+      // remove null byte termination with slash sign
+      buf_off -= 1;
+      // satisfy verifier
+      buf_off = LIMIT_HALF_PERCPU_ARRAY_SIZE(buf_off);
+      out_buf->data[buf_off] = '/';
+      buf_off -= ret - 1;
+      // satisfy verifier
+      buf_off = LIMIT_HALF_PERCPU_ARRAY_SIZE(buf_off);
+    } else {
+      // If sz is 0 or 1 we have an error (path can't be null nor an empty
+      // string)
+      break;
+    }
+    dentry = dentry_parent;
+  }
+
+  // Is string buffer big enough for slash?
+  if (buf_off != 0) {
+    // Add leading slash
+    buf_off -= 1;
+    buf_off = LIMIT_HALF_PERCPU_ARRAY_SIZE(buf_off); // satisfy verifier
+    out_buf->data[buf_off] = '/';
+  }
+
+  // Null terminate the path string
+  out_buf->data[HALF_PERCPU_ARRAY_SIZE - 1] = 0;
+  *path_str = &out_buf->data[buf_off];
+  return HALF_PERCPU_ARRAY_SIZE - buf_off - 1;
+}
+\end{lstlisting}
+
+
+\bigbreak
+
+This function starts by defining the variables needed to get the full path.
+It the reads the \texttt{dentry} and \texttt{vfsmount} inside the \texttt{path struct}.
+This representes the directory entry of the path, and the mount point inside the Linux file system.
+With this information we can access the root of the mount point, stored in \texttt{mnt} and the global root of the filesystem itself, stored in \texttt{mnt\_parent}.
+With all these variables, we can then iterate over the different directory's parents, until we reach the global root of the filesystem, while adding the different directory entries to the buffer we go through in order to parse the full path.
+We make use of a per CPU array in order to bypass the stack limit of eBPF programs which is currently at 512 bytes of data.
+We then return the number of characters written, and the resulting full path is stored in \texttt{path\_str}, which is accessible from the caller function since we pass it as a double pointer.
+
+
+
+\subsection{\texttt{readdir}}
+One of the issues faced during the development of this tool was that of the process ID being available to all users, making the program effectively useless since any user could call the \texttt{sigkill} system call on said process ID. To face this a shared library was implemented so as to intercept and modify the behaviour of the \texttt{readdir} system call, using the \texttt{LD\_PRELOAD} mechanism. The program filters out directory entries for processes with a specified name, which is hardcoded into the program itself. This works since every call to list processes inside a Linux system makes use of the \texttt{proc/} directory to list the processes being ran. By doing this we effectively hide the process ID from the user. The code is shown below, working by loading the original function \texttt{readdir} using \texttt{dlsym}, and then entering a loop where it checks if the directory being accessed by the \texttt{readdir} is \texttt{proc} and if the entry corresponds with the given process name, if so, then it continues the loop, skiping over that entry, otherwise it returns the directory entry.
+
+\begin{lstlisting}
+#define DECLARE_READDIR(dirent, readdir)
+  static struct dirent *(*original_##readdir)(DIR *) = NULL;
+
+  struct dirent *readdir(DIR *dirp) {
+    if (original_##readdir == NULL) {
+      original_##readdir = dlsym(RTLD_NEXT, #readdir);
+      if (original_##readdir == NULL) {
+        fprintf(stderr, "Error in dlsym: %s\n", dlerror());
+      }
+    }
+
+    struct dirent *dir;
+
+    while (1) {
+      dir = original_##readdir(dirp);
+      if (dir) {
+        char dir_name[256];
+        char process_name[256];
+        if (get_dir_name(dirp, dir_name, sizeof(dir_name)) &&
+            strcmp(dir_name, "/proc") == 0 &&
+            get_process_name(dir->d_name, process_name) &&
+            strcmp(process_name, process_to_filter) == 0) {
+          continue;
+        }
+      }
+      break;
+    }
+    return dir;
+  }
+\end{lstlisting}
 
 \section{Conclusion}
-
-In conclusion, this project has explored the crucial concepts of in the field of blockchain technology. Through a review of the state of the art, it was revealed that there are several popular consensus algorithms used in blockchain networks, each with its own strengths and weaknesses. The project then identified the challenges in the field of consensus protocols, including the lack of standardization, difficulties in comparison, testing and the fact that there's a multitude of different consensus algorithms available in the field of blockchain technology,
-making it difficult for individuals and organizations to adopt blockchain effectively.
-
-The proposed solution was to overcome these challenges by providing a method of testing and easily swapping consensus algorithms in a pre-existing well-tested blockchain network.
-The implementation of this solution was tested and proved to be feasible by the execution of the experiment done, demonstrating the versatility and flexibility of the Tezos network in accommodating custom consensus protocols.
-
-The document also outlined the main contributions, goals, and objectives for future work.
-The next phase of the project will focus on the completion and testing of the Proof of Work (experiment) protocol implemented in Tezos, development of a generic framework for adding new consensus algorithms, creation of a platform for testing them, integration with the Lupin DSL, and writing of the thesis to present research results and conclusions on the work performed. The aim is to advance the state of the art in blockchain consensus algorithms and provide a comprehensive understanding of available protocols and tools to improve block\-chain network performance and efficiency.
+This chapter introduced the two pivotal tools which were developed during the course of this internship. The eBPF application serves the purpose of creating maintainers of certain directories, in order to prevent any user other than the maintainer of changing or accessing any content present in said directory.
+The second part of the implementation, which is the shared library, acts as a replacement for the \texttt{readdir} system call, in order to prevent any calls to \texttt{ps} of showing the process ID of the eBPF app itself, thus preventing users from killing said process.
+Together, these tools form the solution found during this internship to prevent data exfiltration, with an eBPF approach.
 
 
 
 
+\chapter{Use Case}
 
-\end{comment}
+\section{Introduction}
+In this chapter, we build on the previous chapter's conclusion, presenting and demonstrating the pratical utility of the tools developed. The objective is to provide a comprehensive overview of the expected behaviour of the application.
+
+To showcase this, the tests ran on said application will be presented, which serve as a case study to showcase the capabilities of the tool developed.
+
+\section{Expected Use Case}
+This application was developed with a specific flow in mind. Namely, it being ran since the start of the boot of a machine. With that in mind, it relies on a script to correctly initiate it, which will freeze the bpf maps after they are populated, and properly hide the process id from users.
+
+\begin{lstlisting}
+#!/bin/bash
+
+make
+
+gcc -Wall -fPIC -shared -o src/processhiding/libprocesshider.so 
+  src/processhiding/processhider.c -ldl
+sudo mv src/processhiding/libprocesshider.so /usr/local/lib/
+echo "/usr/local/lib/libprocesshider.so" >> /etc/ld.so.preload
+
+nohup sudo ./src/eBPF_app src/config.yaml >/dev/null 2>&1 &
+disown $!
+sudo bpftool map freeze name directories
+\end{lstlisting}
+
+This script starts by compiling the eBPF program, with the \texttt{make} command, after which it will compile and load the shared library in order to hide the PID of the program that is afterwards ran.
+It then runs the program, ignoring the hang up signal, which allows the command to continue running even after the user has logged out. It also redirects all output from the program to \texttt{dev/null}, which discards all data written to it, essentially silencing all output from the command. The program is then removed from the shell's job table, which means it will keep running even if the shell is closed.
+Afterwards, the bpf map pertaining to the directories that are tracked is fozen, which means that it will no longer be changeable from user space.
+
+In summary, this script ensures that the program is loaded correctly, being that the only thing that is left to the user is to properly write the \texttt{config.yaml} file.
+
+
+\section{Tests}
+The tests ran on this application were generated using bash scripts, seeing as the application itself should change the behaviour of the system calls that it hooks onto. To achieve this the \cite{bats}{bats-core} testing framework was used, providing a simple way to verify that the program behaves as expected.
+
+\subsection{BATS-core}
+The bats-core framework is a \texttt{BASH AUTOMATED TESTING SYSTEM}, providing a simple way to verify the behaviour of UNIX programs. It is built on top of \texttt{Bash} and leverages its features to define test cases. Each test case is a bash function with a description. The return of a command with the prefix \texttt{run} will determine the success or failure of said function. Its return value is stored in \texttt{\$status.} We can then just check if the command ran successfully or not, which is made possible since a command exits with the status code of 0 if it succeeds.
+The test cases will then be something along the lines of:
+
+\begin{lstlisting}
+  @test "Example test" {
+    run command
+    [ "$status" -eq 0 ]
+  }
+\end{lstlisting}
+
+\subsection{User and file generation}
+To ensure that the program behaves as expected, a test suite was ararnged, where users and files are generted randomly and tested to confirm that their access is revoked or allowed, according to the information contained in the config.yaml file that provides the configuration to the eBPF program.
+To generate a random user, we use the function \texttt{create\_user}, which is shown below.
+
+\begin{lstlisting}
+create_user () {
+    username=$1
+    if id "$username" &>/dev/null; then
+        echo "User $username already exists."
+        return 0
+    fi
+    sudo useradd -m $username
+    sudo passwd -d $username > /dev/null
+}
+\end{lstlisting}
+
+This function relies on one parameter being passed to it, which is the username, that is generated using the \texttt{dev/urandom}. It is exemplified below.
+
+\begin{lstlisting}
+username=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 10 | head -n 1)
+\end{lstlisting}
+
+If the username already exists then nothing is done and the function returns, otherwise, it will call \texttt{useradd}, to create the user, after which, it will delete the password field, making the user passwordless, to prevent the need to input passwords after each command that is run in the test suite.
+
+After the user is generated we need to randomly give it access or not, so that the tests can be ran.
+This is achieved using the function below:
+
+\begin{lstlisting}
+give_permission (){
+    flag=$1
+    username=$2
+    if [ $flag = 1 ]; then
+        echo "uid: $(id -u $username)
+directory:
+    - $(pwd)/testfile" > config.yaml
+else
+        echo "uid: 1003 
+directory:
+    - $(pwd)/testfile" > config.yaml
+    fi
+}
+\end{lstlisting}
+
+This function takes two arguments, which are the \texttt{flag}, which indicates whether or not the user should have permission to access the file, and the \texttt{username}, indicating which user we are refering to.
+If the \texttt{flag} is \textbf{1}, then the user should have access to the file, and as such, its ID is associated with the directory we are currently in. Otherwise, a non-conflicting \texttt{uid} is associated with the directory, in order to test if another user cannot access said file.
+
+These show the setup steps in order for the test suite to be created.
+
+
+\subsection{Testing}
+
+To generate the tests, we abstract them into a function that is compliant with the bats framework, as such:
+
+\begin{lstlisting}
+@test "Random chmod" {
+    username=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 10 | head -n 1)
+    permission=$((RANDOM % 2))
+
+    create_user $username
+    give_permission $permission $username
+
+    touch testfile
+
+    sudo chown $(id -u $username) testfile
+
+    ./eBPF_ls config.yaml &
+
+    pid=$!
+
+    run su -c "chmod 777 testfile" -s /bin/bash $username
+
+    kill $pid
+
+    sudo rm testfile
+
+    sudo deluser --remove-home $username
+
+    if [ $permission = 1 ];
+    then
+        [ "$status" -eq 0 ]
+    else
+        [ "$status" -ne 0 ]
+    fi
+}
+\end{lstlisting}
+
+This function starts by creating a user and randomly giving it permission to a testfile, as shown in the previous subsection. The ownership of said is given to the user, so we can prove that the eBPF program loaded can circumvent even Linux's permissions.
+After that, the program is run in the background, calling the config.yaml file in order to ensure that the program is loaded. Its PID is stored in \texttt{pid}, as to be able to kill the program afterwards.
+The test command is a call to \texttt{chmod} on the \texttt{testfile}, and the exit status is then \textbf{0} if the user should have permission to execute that system call on the file, or not \textbf{0} otherwise.
+The cleanup done at the end of this function, both removing the user and the testfile is done in order to prevent populating the \texttt{uid} group with random users.
+
+These tests are generated for \texttt{chmod} and \texttt{cat}, which pertain to the \texttt{path\_chmod} and \texttt{file\_open} system calls, respectively.
+
+\subsection{Test generation}
+After writing the tests, and being that random uids and permissions are generated, then generating a test suite with a given number of cases is as simple as:
+
+\begin{lstlisting}
+for i in {1..1000}
+do 
+    sudo bats test.sh
+done
+\end{lstlisting}
+
+This script will generate \textbf{1000} test cases, testing both the \texttt{chmod} and \texttt{cat} functions called on a \texttt{testfile}. At the time of writing this test suite was ran several times, and all the tests were successful.
+
+\section{Conclusion}
+In this chapter, the expected use case of the final application was discussed, showcasing the tests ran on it, and the way it is meant to be ran on the maachines that were to implement it.
+
+The details of the testing framework used and the way the program is to be ran are also discussed. With this a more complete view of the application is achieved, being that its functionalities and tests are presented in a concise manner.

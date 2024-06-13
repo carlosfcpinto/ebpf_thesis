@@ -1,0 +1,66 @@
+\chapter{Critical Analysis}
+
+\section{Introduction}
+After achieving the proposed solution, the feasibility of it was analysed.
+Being that the eBPF program developed correctly stopped certain system calls from users who were not allowed access to a certain directory or file, the research shifted its purpose on circumventing the program itself.
+
+
+\section{Directories}
+Firstly, the point in question was the way the paths were passed onto the program itself. By not being able to have a unique file ID that points to a certain file or directory the solution found was that of passing absolute paths into the program.
+This however, poses a vulnerability, seeing as that relies on the fact that none of the folders or sub folders in that path will change their name.
+This is impossible to ensure seeing that if we block all the folders from the home directory we will inevitably block the system itself of making changes to anything, being static, which is not the purpose of the solution.
+This vulnerability was tackled inside the directories where the files are but could not be extended due to the problems mentioned above.
+
+To provide a clearer example of this we can imagine an eBPF program where the file that we want to protect is \texttt{file}, and its full path is \texttt{/home/user/dir/protect/file}. The eBPF program will ensure that the protect folder itself will not be changed, and all its subfiles as well. However, it would be impossible to do that on the home, user or dir folder. Circumventing the eBPF solution would then be as simple as changing \texttt{dir} to \texttt{dir2}, making the full path \texttt{/home/user/dir2/protect/file}, which would be different from the path in the config.yaml file, making the program not track this file anymore, seeing as it would have no reason to.
+
+\section{BPF-LSM}
+To understand how BPF-LSM works on the kernel level we used the \texttt{trace-cmd}, as to trace the calls being made inside functions in the kernel.
+To do this we used the trace-cmd \cite{tracecmd}.
+
+This command serves as the front-end application of \texttt{ftrace}, which in itself is an internal tracer designed to enable the knowledge of the functions called inside the kernel. It can be used for debugging, latency and performance analysis. In this case the capability of function tracing was used enabling the visibility of which functions were called and when, thus leading to a better understanding of the flow of execution of the kernel.
+
+The \texttt{ftrace} command will track a specific call and then output the result to a .dat file with the following command: \texttt{sudo trace-cmd record -p function-graph -g '**' -F sudo mv test test2}.
+The \texttt{-p function-graph} option tells the command to record the system calls and kernel functions in a function graph format.
+The \texttt{-g} option filters the functions which are to be recorded. We use the \texttt{'**'} wildcard to match all functions in this example.
+The \texttt{-F} specifies which command is to be traced, which in this case is \texttt{sudo mv test test2}.
+After this command is ran, a call to \texttt{trace-cmd report} will output the report in a human readable format.
+Trimming the output we can analyze the following kernel function:
+
+\begin{lstlisting}
+vfs_open() {
+	do_dentry_open() {
+		path_get() {
+			mntget();
+		}
+		try_module_get();
+                security_file_open() {
+			hook_file_open() {
+				get_current_fs_domain();
+			}
+			apparmor_file_open();
+			bpf_lsm_file_open() {
+				__rcu_read_lock();
+				__rcu_read_unlock();
+				__rcu_read_lock();
+				migrate_disable();
+				bpf_get_current_uid_gid() {
+					from_kgid() {
+					map_id_up();
+					............
+\end{lstlisting}
+
+We should focus on the \texttt{security\_file\_open()} function, which will call a number of different functions deciding whether or not to allow the \texttt{file\_open} system call to be made.
+Inside this function we can see that there is a \texttt{bpf\_lsm\_file\_open()} function, which is populated due to the program that was developed, starting to get the \texttt{uid} from the user making the call.
+It will then call a number of different kernel functions that are needed in order for the program to run.
+We can then consider the application that was developed as a number of kernel functions being called. The problem with this, from a security perspective is that, relying on kernel functions is not secure by design, seeing as that with the kernel being open source a skilled user could simply execute this command, and seeing the functinos used could alter the kernel itself, by patching it, and comment out any calls to \texttt{bpf\_lsm} functions, thus rendering the application useless. This would imply a deep knowledge of the tools used, but it is nonetheless a vulnerability identified during the development process of this application.
+The resolution of this vulnerability would imply the change of the Linux kernel itself, which is unrealistic, seeing as it would go against the Linux philosophy. Therefore, this vulnerability was simply identified and not resolved.
+
+\section{\texttt{sudo su}}
+Another vulnerability noted during the development of this application was that the users of the machines where the application should be deployed have \texttt{sudo} acess. This meant that any user was capable of calling \texttt{sudo su} to change the identity to any user. This problem was tackled on an Ubuntu based system by commenting out the line \texttt{auth sufficient pam\_rootok.so} in \texttt{/etc/pam.d/su}, which disables root's ability to \texttt{su} without passwords. This is however a solution that is easily bypassed by readding the line, making it a vulnerability should any user be aware of this. It could not be prevented with eBPF, and thus it presents another vector of attack to allow data exfiltration.
+
+\section{Conclusion}
+In this chapter a critical analysis of the work that was developed is presented.
+As for the work developed throughout this internship, the goal of it was achieved, which was the study of eBPF as a whole, and the feasibility of an eBPF based approach to tackle the data exfiltration problem faced by the company in the machines provided to its clients. During the course of this internship and the development of this application many difficulties were faced, namely the study of the Linux kernel, the study of eBPF and its monitoring and security capabilities, its vulnerabilities, namely the ones mentioned in the previous section, and the adaptation to the overall development best practices concerning eBPF and kernel based security tools.
+
+At the end of this investigation and development process, it should be noted that the conclusion was that eBPF is not a feasible solution to the problem at hand. Due to the nature of the Linux kernel and this tool in particular, the vulnerabilities mentioned in this chapter were intractable. Many of the vulnerabilities noted previously were resolved, by adding more hookpoints to the program and by armoring it, which were explained in the Tool Development chapter. The ones mentioned in this chapter pose the biggest challenge, seeing as they were not dependent on development choices, but rather on the choices made in the development of the tools used.
+
